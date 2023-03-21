@@ -1,0 +1,235 @@
+input:not([type='checkbox']),select {
+  width: 100%;
+  height: 50px;
+  padding: 10px;
+  color: #fff;
+  background: transparent;
+  border: 1px solid #fff;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+select option{
+  background-color: #000;
+}
+
+label{
+  font-family: 'legend';
+  letter-spacing: 2px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+label a{
+  color: #bd0f0f  ;
+}
+.time {
+  display: flex;
+  justify-content: space-between;
+}
+.teams{
+  display: flex;
+  justify-content: space-between;
+}
+
+
+
+
+.btn .btn-outline-secondary:hover{
+  background: transparent;
+}
+
+button.btn-outline-primary{
+  background-color: #bd0f0f;
+  color: #fff;
+  border: none;
+}
+
+ul {
+ gap: 20px;
+}
+.booked_cricket_court{
+  border: 2px solid #fff;
+}
+
+.time_row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.time_row  select{
+  margin: 0;
+}
+
+select::ng-deep .mat-select-arrow {
+  color: red;
+}
+
+.buttons_row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.booked_cricket_court p:first-child span {
+  font-size: 18px;
+  color: #d50404;
+}
+
+.booked_cricket_court p {
+  text-align: center;
+  gap: 13px;
+}
+
+.booked_cricket_court {
+  border-radius: 5px;
+  background: #444;
+  padding: 15px !important;
+}
+
+
+.booked_cricket_court p:nth-child(2) span {
+  font-size: 18px;
+}
+.booked_cricket_court p:last-child{
+  text-align:center;
+}
+.booking_details  li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #fff;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.booking_details  li span {
+  font-size: 13px;
+  padding-left: 10px;
+  width: 55%;
+}
+
+.booking_final{
+  border: 5px solid #fff;
+  padding: 20px; 
+  border-radius: 10px;
+  width: 90%;
+  margin: 0 auto 20px auto;
+
+}
+.form-error{
+  position: relative;
+  top: -17px;
+}
+
+tr {
+  border-bottom: 1px solid #fff;
+}
+
+table {
+  width: 100%;
+}
+
+#myElement{
+  display: none;
+}
+
+
+.loading{
+  height: 200px;
+  display: flex;
+  justify-content: center;
+}
+
+
+/* li inputs  */
+li.input_li {
+  justify-content: start!important;
+}
+
+li.input_li input {
+  margin: 0 !important;
+  border: none !important;
+  width: 100% !important;
+  font-family: 'poppins' !important;
+}
+
+li.input_li input:focus-visible {
+  outline: none !important;
+}
+/* li inputs  */
+
+
+li span{
+  font-family: 'poppins' !important;
+}
+
+li.input_li.wrong_input   {
+  border-bottom: 1px solid red !important;
+}
+
+table td ,table th {
+  padding: 10px;
+}
+
+
+.modal-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* .modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+      max-width: 400px;
+    margin: 0 auto;
+} */
+
+
+
+.confirmModal {
+  text-align: center;
+  padding: 20px;
+}
+
+.confirmModal * {
+  color: #000;
+}
+
+.confirmModal h4 {
+  font-size: 50px;
+  font-weight: 600;
+}
+
+.modal-btn {
+  gap: 22px;
+}
+
+.modal-btn button:last-child {
+  background: green;
+  color: #fff !important;
+  border: none;
+  width: 120px;
+}
+
+.modal-btn button:first-child {
+  background: #850000;
+  color: #fff !important;
+  border: none;
+  width: 120px;
+}
+
+.confirmModal img {
+  width: 170px;
+}
+
+a.material-icons.dl.d-anchor {
+  pointer-events: none;
+}
+
+.d-dltt {
+  cursor: not-allowed;
+}

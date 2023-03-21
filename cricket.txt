@@ -1,0 +1,975 @@
+<app-inner-banner></app-inner-banner>
+<section class="circket-booking py_8">
+  <div class="container">
+    <div class="theme_heading text-center">
+      <h2>Indoor Cricket</h2>
+      <h3 class="text-center"  style="color: green;" *ngIf="bookingStatus">Thank Your For Booking</h3>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12" [@slide] *ngIf="step === 1">
+            <h3>Book Your Court</h3>
+            <form [formGroup]="formGroup" id="target" (submit)="sendForm()">
+              <div class="row mattch_info">
+                <div class="col-md-6">
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    formControlName="name"
+                    required
+                    formControlName="name"
+                    [(ngModel)]="nameInput"
+                    placeholder="Your Name"
+                  />
+                  <div
+                    class="form-error"
+                    *ngIf="submitted && fb.name.errors?.['required']"
+                  >
+                    Name is required
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label>Email</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="emailInput"
+                    formControlName="email"
+                    required
+                    placeholder="xyz@email.com"
+                  />
+                  <div
+                    class="form-error"
+                    *ngIf="submitted && fb.email.errors?.['required']"
+                  >
+                    Email is required
+                  </div>
+                  <div
+                    class="form-error"
+                    *ngIf="submitted && fb.email.errors?.['email']"
+                  >
+                    Email is invalid
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label>Phone Number</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="phoneInput"
+                    formControlName="phone_no"
+                    required
+                    placeholder="03xx-xxxxxxxxx"
+                  />
+                  <div
+                    class="form-error"
+                    *ngIf="submitted && fb.phone_no.errors?.['required']"
+                  >
+                    Phone is required
+                  </div>
+                  <div
+                    class="form-error"
+                    *ngIf="submitted && fb.phone_no.errors?.['pattern']"
+                  >
+                    Please Enter Valid Number
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label>Number of Players</label>
+                  <input
+                    type="number"
+                    min="2"
+                    max="16"
+                    [(ngModel)]="playerInput"
+                    required
+                    formControlName="no_of_players"
+                    placeholder="ex : 4 "
+                  />
+                  <div
+                    class="form-error"
+                    *ngIf="submitted && fb.no_of_players.errors?.['required']"
+                  >
+                    Number Of Players is required
+                  </div>
+                  <div class="form-error" *ngIf="fb.no_of_players.errors.min">
+                    Minimum 4 Player Required
+                  </div>
+                  <div class="form-error" *ngIf="fb.no_of_players.errors.max">
+                    Maximum 12 Player Allowed
+                  </div>
+                </div>
+                <div class="col-md-12 d-flex justify-content-end">
+                  <button class="theme_btn" type="submit">
+                    Proceed <i class="fa-regular fa-arrow-right-long"></i>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div *ngIf="step === 2" class="col-md-12 mt-3" [@slide]>
+            <h3>Booking Date</h3>
+            <p>{{ selectedDate }}</p>
+            <app-date-picker
+              (messageEvent)="receiveMessage($event)"
+              
+            ></app-date-picker>
+            <button class="theme_btn mt-2" (click)="step = 1">
+              <i class="fa-regular fa-arrow-left-long"></i> Back
+            </button>
+          </div>
+          <div *ngIf="step === 3" class="col-md-12" [@slide]>
+            <h3 class="d-flex justify-content-between">
+              Booked Court <span class="date">{{ selected_date }}</span>
+            </h3>
+
+            <div class="row align-items-center">
+              <div class="col-md-12">
+                <ul class="d-flex align-items-center justify-content-center">
+                  <li *ngFor="let item of bookedTimes">
+                    <div class="booked_cricket_court">
+                      <p><span>Team A</span> Vs <span>Team B</span></p>
+                      <p>
+                        <span>{{ item.user_start_time }}</span> To
+                        <span>{{ item.user_end_time }}</span>
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-md-12">
+                <h3>Book Your Court</h3>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="">From</label>
+                    <div class="time_row">
+                      <select
+                        name=""
+                        id=""
+                        [(ngModel)]="fromTime"
+                        (ngModelChange)="checkValidity()"
+                      >
+                        <option value="default" disabled>Select Hours</option>
+                        <option value="12">12</option>
+                        <option value="13">1</option>
+                        <option value="14">2</option>
+                        <option value="15">3</option>
+                        <option value="16">4</option>
+                        <option value="17">5</option>
+                        <option value="18">6</option>
+                        <option value="19">7</option>
+                        <option value="20">8</option>
+                        <option value="21">9</option>
+                        <option value="22">10</option>
+                        <option value="23">11</option>
+                      </select>
+                      <span>:</span>
+                      <select
+                        [(ngModel)]="fromMin"
+                        (ngModelChange)="checkValidity()"
+                      >
+                        <option value="default" disabled>Minutes</option>
+                        <option *ngFor="let it of timecheck" [value]="it">{{it}}</option>
+                      </select>
+                      <select
+                        [(ngModel)]="fromType"
+                        (ngModelChange)="checkValidity()"
+                        disabled
+                      >
+                        <option selected value="AM">AM</option>
+                        <option value="PM">PM</option>
+                      </select>
+                    </div>
+                    <div class="theme_error" *ngIf="errorMessage">
+                      <p>{{ errorMessage }}</p>
+                    </div>
+                    <div class="theme_error" *ngIf="check24HoursError">
+                      <p>Booking Cant Be Done Before 24 Hours</p>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6 position-relative">
+                    <label for="">To</label>
+                    <div class="time_row">
+                      <select
+                        name=""
+                        id=""
+                        [(ngModel)]="toTime"
+                        (ngModelChange)="checkValidity()"
+                        [disabled]="fromTime == 'default'"
+                      >
+                        <option value="default" disabled>Select Hours</option>
+                         <option  *ngFor="let time of endTimeCheck" [value]="time.value"  [disabled]="fromTime > time.value" >{{time.name}}</option>
+                       
+                      </select>
+                      <span>:</span>
+                      <select
+                        [(ngModel)]="toMin"
+                        (ngModelChange)="checkValidity()"
+                      >
+                        <option value="default" disabled>Minutes</option>
+                        <option *ngFor="let it of timecheck" [value]="it" [disabled]="fromMin >= it && fromTime == toTime ">{{it}}</option>
+                      
+                      </select>
+                      <select
+                        [(ngModel)]="toType"
+                        (ngModelChange)="checkValidity()"
+                        disabled
+                      >
+                        <option selected value="AM">AM</option>
+                        <option value="PM">PM</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="buttons_row">
+                      <button class="theme_btn" (click)="step = 2">
+                        <i class="fa-regular fa-arrow-left-long"></i> Back
+                      </button>
+                      <button
+                        class="theme_btn"
+                        [disabled]="
+                          fromTime == 'default' ||
+                          fromMin == 'default' ||
+                          toTime == 'default' ||
+                          toMin == 'default'
+                        "
+                        (click)="submitData()"
+                      >
+                        Proceed
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="step === 4 && !bookingStatus" class="col-md-12 booking_final" [@slide]>
+            <h3 class="text-center d-flex justify-content-between">
+              Enter Players Details
+              <span>Total Players {{ totalSelectedPlayers }}</span>
+            </h3>
+            <div class="row">
+              <div class="col-md-8">
+                  <form [formGroup]="form">
+                  <div class="row">
+                    <div
+                      class="col-md-6"
+                      *ngFor="let player of totalPlayerArray; index as i"
+                    >
+                    
+                      <h4>Player {{ i + 1 }}</h4>
+                      <input
+                        type="text"
+                        placeholder="Name"
+                        formControlName="name_{{ player }}"
+                      />
+                      <div
+                        *ngIf="
+                          form.get('name_' + player)?.invalid && displayErrors
+                        "
+                        class="form-error"
+                      >
+                        Please Enter Correct Name
+                      </div>
+                      <input
+                        type="tel"
+                        placeholder="Number"
+                        (ngModelChange)="checkNumber(player, $event)"
+                        formControlName="number_{{ player }}"
+                      />
+                      <div
+                        *ngIf="
+                          form.get('number_' + player)?.invalid && displayErrors
+                        "
+                        class="form-error"
+                      >
+                        Please Enter Correct Phone Number
+                      </div>
+                      <div class="form-error" *ngIf="form.get('number_' + player)?.hasError('invalid') && form.get('number_' + player)?.touched">
+                        Number already exists, please enter a different number.
+                      </div>
+                    </div>
+                  </div>
+                  </form>
+                </div>
+                <div class="col-md-4">
+                  <h3>Booking Details</h3>
+                  <ul class="booking_details">
+                    <li>
+                      Name : <span>{{ finalData.name }}</span>
+                    </li>
+                    <li>
+                      Number : <span>{{ finalData.phone }}</span>
+                    </li>
+                    <li>
+                      Email : <span>{{ finalData.email }}</span>
+                    </li>
+                    <li>
+                      Number Of Players :
+                      <span>{{ finalData.totalPlayers }}</span>
+                    </li>
+                    <li>
+                      Date : <span>{{ finalData.date }}</span>
+                    </li>
+                    <li>
+                      Time:
+                      <span
+                        >{{ finalData.user_start_time }} To
+                        {{ finalData.user_end_time }}</span
+                      >
+                    </li>
+                    <li>
+                      Booked For:
+                      <span
+                        >{{ finalData.booked_for }}</span
+                      >
+                    </li>
+                    <li>
+                      Total : <span>{{ finalData.price }}</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-md-12">
+                  <div class="buttons_row">
+                    <button class="theme_btn" (click)="step = 3">
+                      <i class="fa-regular fa-arrow-left-long"></i> Back
+                    </button>
+                    <button class="theme_btn" (click)="saveData()">
+                      Confirm Booking
+                    </button>
+                  </div>
+                </div>
+              </div>
+           
+          </div>
+          <div *ngIf="bookingStatus" class="col-md-12 booking_final" >
+            <div class="row borderr">
+                <div class="col-md-8 player_data">
+                    <h3>Players Details</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Number</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let player of returnBookingData[0].player;index as i">
+                                <td>{{i+1}}</td>
+                                <td>{{player.name}}</td>
+                                <td>{{player.number}}</td>
+                                <td>{{player.ticket_price}}</td>
+                            
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                  
+                    
+            
+                </div>
+                <div class="col-md-4">
+                    <div class="booking_details">
+                        <h3>Booking Details</h3>
+                        <ul>
+                            <li>Name  : <span>{{returnBookingData[0].name}}</span></li>
+                            <li>Number  : <span>{{returnBookingData[0].phone_no}}</span></li>
+                            <li>Email  : <span>{{returnBookingData[0].email}}</span></li>
+                            <li>Date  : <span>{{returnBookingData[0].select_date}}</span></li>
+                            <li>Time  : <span>{{returnBookingData[0].user_start_time}} to {{returnBookingData[0].user_end_time}}</span></li>
+                            <li>Number Of Players  : <span>{{returnBookingData[0].number_of_player}}</span></li>
+                            <li>Booked For  : <span>{{returnBookingData[0].booked_for}}</span></li>
+                            <li>Total : <span>{{returnBookingData[0].price}}</span></li>
+                        </ul>
+            
+                        <div class="d-flex justify-content-end">
+                            <button class="theme_btn"  routerLink="/home">Back To Home</button>
+                        </div>
+                    </div>
+                </div>
+               </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+import { Component } from '@angular/core';
+import { NgbCalendar, NgbDateStruct, NgbTimeStruct ,NgbTimepickerConfig} from '@ng-bootstrap/ng-bootstrap';
+import { FormControl, Validators,FormGroup,FormBuilder, AbstractControl, ValidatorFn  } from '@angular/forms';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { DataService } from '../services/data.service';
+import { DatePipe } from '@angular/common';
+import * as moment from 'moment';
+@Component({
+  selector: 'app-cricket-booking',
+  templateUrl: './cricket-booking.component.html',
+  animations: [
+    trigger('fade', [
+      state('void', style({ transform: 'scale(0)' })),
+      transition('void => *', animate('300ms ease-in', style({ transform: 'scale(1)' }))),
+      transition('* => void', animate('100ms ease-out', style({ transform: 'scale(0)' })))
+    ]),
+    trigger('slide', [
+      state('void', style({ transform: 'translateX(-100%)' })),
+      transition('void => *',animate('1000ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ transform: 'translateX(0)' }))),
+      transition('* => void', animate('00ms ease-out', style({ transform: 'translateX(-100%)' , })))
+    ])
+  ],
+  styleUrls: ['./cricket-booking.component.css'],
+  providers: [DatePipe]
+})
+export class CricketBookingComponent {
+
+  fromTime: any = "default";
+  toTime: any = "default";
+  fromMin: any = 'default' ;
+  toMin: any = 'default' ;
+  fromType: any = 'AM' ;
+  toType: any = 'AM' ;
+  errorMessage: string = "";
+  value = 0;
+  step = 1;
+  selectedDate: any;
+  selected_date: any;
+  bookedTimes:any;
+  selectedTime:any
+  formGroup:any = [];
+  fb:any;
+  submitted: any;
+  nameInput : any
+  emailInput : any
+  phoneInput : any
+  playerInput : any
+  selectedFromTime:any
+  selectedToTime:any
+  totalSelectedPlayers:any
+  totalPlayerArray:any = []
+  finalData:any
+  formData:any = [];
+  ticket_price = 2000;
+  confrimBooking= false
+  confirmBookingForm:any
+  displayErrors:any
+  numbersArry:any = ['','','','','','','','','','','','','','','','',]
+  numberMatched :any
+  bookingStatus = false
+  returnBookingData:any
+
+  mStartTime:any
+  mEndTime:any
+  check24Hours:any
+  check24HoursError = false
+
+  markDisable:any =true
+
+  endTimeCheck  = [
+    {value:12,name:12},
+    {value:13,name:1},
+    {value:14,name:2},
+    {value:15,name:3},
+    {value:16,name:4},
+    {value:17,name:5},
+    {value:18,name:6},
+    {value:19,name:7},
+    {value:20,name:8},
+    {value:21,name:9},
+    {value:22,name:10},
+    {value:23,name:11},
+
+  ]
+  timecheck = ['00','15','30','45'];
+  // players = [0,1]
+  
+
+   
+
+
+  
+
+
+  // bookedTimes = [
+  //   {from:'9 : 00 AM',to:'10 : 45 AM',fromHour:10,toHour:11},
+  //   {from:'12 : 00 PM',to:'1 : 45 PM',fromHour:12,toHour:13},
+  //   {from:'2 : 00 PM',to:'3 : 15 PM',fromHour:14,toHour:15}
+  // ]
+
+  minDate: NgbDateStruct = {year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate()};
+  maxDate: NgbDateStruct = {year: new Date().getFullYear()+1, month: 12, day: 31};
+  time: NgbTimeStruct = {hour: 13, minute: 30, second: 0};
+
+  timeControl = new FormControl(this.time, [Validators.required, this.timeValidator]);
+  form : FormGroup
+  minutesDiff: any;
+  endDate: any;
+  startDate: any;
+  ngOnInit() {
+  
+
+    // step 1 form 
+    this.formGroup = new FormGroup({
+      name: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      phone_no: new FormControl('', [Validators.required, Validators.pattern(/^03[0-9]{9}$/)]),
+      no_of_players:  new FormControl('', [Validators.required,Validators.min(4), Validators.max(12)])
+     }); 
+
+
+    
+
+
+
+
+    this.timeControl.valueChanges.subscribe(time => {
+      if (time) {
+        if (this.timeControl.invalid) {
+          this.timeControl.setValue(this.time);
+        } else {
+          this.time = time;
+        }
+      }
+    });
+  }
+  
+
+  timeValidator(control: FormControl) {
+    const hour = control.value.hour;
+    if (hour < 10 || hour > 23) {
+      return { timeValidator: { valid: false } };
+    }
+    return null;
+  }
+
+  constructor(public calendar: NgbCalendar,config:NgbTimepickerConfig ,public request:DataService,private fba: FormBuilder,private datePipe: DatePipe) { 
+    config.spinners = false;
+    this.form = this.fba.group({
+      name: [''],
+      number: ['']
+    });
+  }
+
+ 
+
+
+  
+
+checkValidity() {
+
+
+console.log(this.fromTime)  
+  if(this.fromTime > 11){
+    this.fromType = 'PM'
+  }
+  else{
+    this.fromType = 'AM'
+
+  }
+  if(this.toTime > 11){
+    this.toType = 'PM'
+  }
+  else{
+    this.toType = 'AM'
+
+  }
+
+  this.selectedFromTime = `${this.fromTime}:${this.fromMin} ${this.fromType}`
+   this.selectedToTime = `${this.toTime}:${this.toMin} ${this.toType}`
+
+  if (this.checkBookedTimes(this.selectedFromTime, this.selectedToTime, this.bookedTimes,this.fromTime,this.toTime)) {
+    this.errorMessage = "Selected time is already booked";
+    this.markDisable = true
+  } else {
+
+    if(this.selectedFromTime == this.selectedToTime || this.fromTime > this.toTime   ) {
+      this.errorMessage = "Please Choose Valid Time ! ";
+      this.markDisable = true
+    } else {
+        this.errorMessage = "";
+        this.markDisable = false
+    }
+  }
+
+ 
+}
+checkBookedTimes(startTime: any, endTime: any, bookedTimes: any[],startHour:any,endHour:any) {
+  let isBooked = false;
+  bookedTimes.filter(time => {
+    console.log(`start time ${startTime} - end time ${endTime} database time ${time.to}`)
+    if ((startTime >= time.from && startTime <= time.to) || (endTime >= time.from && endTime <= time.to) || (startHour < time.hourFrom && startHour >time.hourTo) ) {
+      isBooked = true;
+    }
+  });
+  return isBooked;
+}
+
+
+
+
+
+receiveMessage(date: string) {
+  var mS = [
+    '',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'June',
+    'July',
+    'Aug',
+    'Sept',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+
+  let month: any = Object.values(date)[1];
+  this.selectedDate = `${Object.values(date)[2]}-${mS[month]}-${Object.values(date)[0]}`;
+  this.selected_date = `${Object.values(date)[1]}/${Object.values(date)[2]}/${Object.values(date)[0]}`;
+
+
+  this.step = 3
+
+// let startTimeString = "2021-01-01T10:00:00";
+// 1/31/2023
+  this.mStartTime = String(`${Object.values(date)[0]}-0${Object.values(date)[2]}-${Object.values(date)[1]} `);
+  this.mEndTime= String(`${Object.values(date)[0]}-0${Object.values(date)[2]}-${Object.values(date)[1]} `);
+  this.check24Hours= String(`${Object.values(date)[0]}-0${Object.values(date)[1]}-${Object.values(date)[2]} `);
+  this.request.post('/public/api/cricket/booking_search/date',{select_date:this.selected_date},false).subscribe((res)=>{
+  this.bookedTimes = res
+  console.log(this.bookedTimes)
+  })
+}
+submitData(){
+  
+
+  // Getting Time Diffrance 
+  
+  
+let startTimeString = `${this.mStartTime}${this.selectedFromTime}`
+let endTimeString = `${this.mEndTime}${this.selectedToTime}`
+let startTime = moment(startTimeString, "YYYY-MM-DD HH:mm a");
+let endTime = moment(endTimeString, "YYYY-MM-DD HH:mm a");
+let difference = endTime.diff(startTime, 'minutes', true);
+let hoursDifference = Math.floor(difference / 60);
+let minutesDifference = Math.round(difference % 60);
+let bookedFor =  hoursDifference + " Hours " + minutesDifference + " Minutes";
+
+// Getting Time Diffrance 
+
+let startTimeString2 = `${this.check24Hours}${this.selectedFromTime}`;
+
+let selectedTime = moment(startTimeString2, "YYYY-MM-DD hh:mm a");
+let now = moment();
+console.log(selectedTime.format('YYYY-MM-DD hh:mm:ss a'));
+console.log(now.format('YYYY-MM-DD hh:mm:ss a'));
+let difference2 = selectedTime.diff(now, 'hours', true);
+let roundedDifference = Math.round(difference2);
+
+
+let Starttime = this.selectedFromTime;
+let hours = parseInt(Starttime.substr(0,2));
+let minutes = Starttime.substr(3,2);
+let ampm = hours >= 12 ? 'PM' : 'AM';
+hours = hours % 12;
+hours = hours ? hours : 12;
+Starttime = `${hours}:${minutes} ${ampm}`;
+
+let Endtime = this.selectedToTime;
+let ehours = parseInt(Endtime.substr(0,2));
+let eminutes = Endtime.substr(3,2);
+let eampm = ehours >= 12 ? 'PM' : 'AM';
+ehours = ehours % 12;
+ehours = ehours ? ehours : 12;
+Endtime = `${ehours}:${eminutes} ${eampm}`;
+
+
+if (roundedDifference >= 24 || !this.markDisable)  {
+  this.step = 4
+} else {
+  this.check24HoursError = true
+}
+
+  let  getData:any = localStorage.getItem('cricket_booking_form')
+  const jsonUserData = JSON.parse(getData);
+  this.totalSelectedPlayers = jsonUserData.no_of_players
+this.totalPlayerArray= []
+  for(let i  = 1; i <= this.totalSelectedPlayers; i++){
+     this.totalPlayerArray.push(i);
+  }
+  this.totalPlayerArray.forEach((player:any) => {
+    this.form.addControl(`name_${player}`, new FormControl('',[Validators.required, Validators.pattern(/^[a-zA-Z\s]+$/)]));
+    this.form.addControl(`number_${player}`, new FormControl('',[Validators.required, Validators.pattern(/^03[0-9]{9}$/)]));
+  });
+   
+  const data = {
+    name: jsonUserData.name,
+    email: jsonUserData.email,
+    phone_no: jsonUserData.phone_no,
+    no_of_players: jsonUserData.no_of_players,
+    date: this.selected_date,
+    from : this.selectedFromTime,
+    to : this.selectedToTime,
+    fromHour:this.fromMin ,
+    toHour:this.toMin,
+    booked_for:bookedFor,
+    user_start_time:Starttime,
+    user_end_time:Endtime
+  };
+  localStorage.setItem('cricket_booking_final', JSON.stringify(data));
+
+  let  getFianlData:any = localStorage.getItem('cricket_booking_form')
+  const jsonFinalData = JSON.parse(getFianlData);
+
+
+  this.finalData = {
+   name : jsonFinalData.name,
+   email : jsonFinalData.email,
+   phone : jsonFinalData.phone_no,
+   totalPlayers: jsonFinalData.no_of_players,
+   date:this.selectedDate,
+   startTime :this.selectedFromTime,
+   endTime :this.selectedToTime,
+   price: 4000,
+   booked_for:bookedFor,
+   user_start_time:Starttime,
+   user_end_time:Endtime
+  }
+ 
+}
+
+// saveData 
+sendForm () {
+  this.rule();
+  if (this.formGroup.valid) {
+  let local = localStorage.setItem('cricket_booking_form',JSON.stringify(this.formGroup.value));
+  this.step = 2
+
+   return;
+  } else {
+    // alert('error')
+  }
+  this.submitted = true;
+}
+
+rule(){
+ this.fb = this.formGroup.controls;
+  
+}
+// saveData 
+
+
+// get Players data 
+
+
+saveData() {
+console.clear();
+let  getFianlData:any = localStorage.getItem('cricket_booking_final')
+const jsonFinalData = JSON.parse(getFianlData);
+
+console.log(jsonFinalData)
+let arr  = [];
+  for(let i  = 1; i <= this.totalSelectedPlayers; i++){
+    arr.push({"name":(this.form.get(`name_${i}`)?.value),"number":this.form.get(`number_${i}`)?.value,"ticket_price":this.ticket_price});
+
+ }
+
+
+//  console.log(jsonFinalData.booked_for)
+this.confirmBookingForm = this.form.controls
+ if (this.form.valid && !this.numberMatched) {
+  let  getFianlData:any = localStorage.getItem('cricket_booking_final')
+  const jsonFinalData = JSON.parse(getFianlData);
+
+  // console.log(js)
+
+  this.finalData = {
+   name : jsonFinalData.name,
+   email : jsonFinalData.email,
+   phone_no : jsonFinalData.phone_no,
+   number_of_player: jsonFinalData.no_of_players,
+   select_date:this.selected_date,
+   from :this.selectedFromTime,
+   to :this.selectedToTime,
+   hourFrom: this.fromTime,
+   hourTo: this.toTime,
+   price: 4000,
+   players:arr,
+   booked_for:jsonFinalData.booked_for,
+   user_start_time:jsonFinalData.user_start_time,
+   user_end_time:jsonFinalData.user_end_time
+  }
+   localStorage.setItem('cricket_booking_final',JSON.stringify(this.finalData));
+   console.clear
+   console.log(this.finalData)
+   this.request.post('/public/api/cricket/booked',this.finalData,false).subscribe((res)=>{
+   this.bookingStatus = true
+   this.returnBookingData = res
+   })
+ return;
+} else {
+  this.displayErrors = true;
+}
+}
+
+// get Players data 
+checkNumber(player: any, event: any) {
+ if(event.length == 11){
+   if(this.numbersArry.includes(event)){
+     console.log('number already exist')
+     this.numberMatched = true
+       //get the specific form control and set its status to 'INVALID'
+       this.form.get(`number_${player}`)?.setErrors({'invalid': true});
+    }
+    else{
+      this.numbersArry[player] = event 
+      console.log('number added' + this.numbersArry)
+      this.numberMatched = false
+      this.form.get(`number_${player}`)?.setErrors(null);
+    }
+  }
+}
+
+ 
+}
+
+input:not([type='checkbox']),select {
+    width: 100%;
+    height: 50px;
+    padding: 10px;
+    color: #fff;
+    background: transparent;
+    border: 1px solid #fff;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+select option{
+    background-color: #000;
+}
+
+label{
+    font-family: 'legend-m';
+    letter-spacing: 2px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+label a{
+    color: #bd0f0f  ;
+}
+.time {
+    display: flex;
+    justify-content: space-between;
+}
+.teams{
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+
+button.btn.btn-outline-secondary{
+    width: 100%;
+    height: 50px;
+    border: none;
+    background: transparent;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.btn .btn-outline-secondary:hover{
+    background: transparent;
+}
+
+button.btn-outline-primary{
+    background-color: #bd0f0f;
+    color: #fff;
+    border: none;
+}
+
+ul {
+   gap: 20px;
+}
+.booked_cricket_court{
+    border: 2px solid #fff;
+}
+
+.time_row {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+}
+.time_row  select{
+    margin: 0;
+}
+
+select::ng-deep .mat-select-arrow {
+    color: red;
+  }
+
+  .buttons_row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .booked_cricket_court p:first-child span {
+    font-size: 18px;
+    color: #d50404;
+}
+
+.booked_cricket_court p {
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 13px;
+}
+
+.booked_cricket_court {
+    padding: 14px;
+    border-radius: 5px;
+}
+
+
+.booked_cricket_court p:last-child span {
+    font-size: 18px;
+}
+
+ .booking_details  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #fff;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+ .booking_details  li span {
+    font-size: 13px;
+    padding-left: 10px;
+    width: 55%;
+}
+
+.booking_final{
+    border: 5px solid #fff;
+    padding: 20px; 
+    border-radius: 10px;
+}
+.form-error{
+    position: relative;
+    top: -17px;
+}
+
+tr {
+    border-bottom: 1px solid #fff;
+}
+
+table {
+    width: 100%;
+}

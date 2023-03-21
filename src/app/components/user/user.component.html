@@ -1,0 +1,33 @@
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="buton d-flex justify-content-end">
+                    <a routerLink="../Add-User" class="btn btn-primary">Add Use</a>
+                </div>
+                    <div class="element-box mt-30">
+                      <div class="mainloading" *ngIf="!isLoading">
+                        <span class="load-ani"></span>
+                      </div>
+                        <div class="row users">
+                  <div class="col-md-3 mb-3" *ngFor="let item of users">
+                    <div class="profile-card">
+                      <div class="profile-card-header">
+                        <h3 class="profile-name text-center">{{item.name}} <span class="type">({{item.role}})</span></h3>
+                        <p class="profile-desc text-center">{{item.phoneNumber}}</p>
+                        <p class="profile-desc text-center">{{item.email}}</p>
+                      </div>
+                    </div>
+                  </div>
+               
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+</div>
+

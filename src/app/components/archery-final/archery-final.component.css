@@ -1,0 +1,95 @@
+input , select{
+    height: 50px;
+    width: 100%;
+    border: 1px solid #fff;
+    margin-bottom: 30px;
+    background: transparent;
+    color: #fff;
+}
+label{
+    margin-bottom: 4px;
+}
+select:focus ,
+input:focus {
+  background-color: transparent;
+  color: #fff;
+}
+option{
+  background-color: #000;
+}
+
+
+.confirmModal {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .confirmModal * {
+    color: #000;
+  }
+  
+  .confirmModal h4 {
+    font-size: 50px;
+    font-weight: 600;
+  }
+  
+  .modal-btn {
+    gap: 22px;
+  }
+  
+  .modal-btn button:last-child {
+    background: green;
+    color: #fff !important;
+    border: none;
+    width: 120px;
+  }
+  
+  .modal-btn button:first-child {
+    background: #850000;
+    color: #fff !important;
+    border: none;
+    width: 120px;
+  }
+  
+  .confirmModal img {
+    width: 170px;
+  }
+
+
+  ul li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-bottom: 1px solid #fff;
+  }
+  
+
+  .addons{
+   gap: 10px;
+   margin-bottom: 20px;
+   border-bottom: 1px solid #fff;
+   padding-bottom: 30px;
+  }
+
+  .addons input{
+    border-radius: 5px;
+    margin: 0;
+   }
+   .addons button{
+    background-color: #850000;
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px;
+    outline: none;
+    border: none;
+   }
+  
+
+   .bg-colors  {
+    background-color: transparent;
+    border: 5px solid #fff;
+    border-radius: 20px;
+    padding: 20px;
+   }

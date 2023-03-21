@@ -1,0 +1,58 @@
+<section class="login">
+    <div class="loginbox">
+        <div class="row align-items-center">
+            <div class="col-md-6 login_image">
+               <img src="../../../assets/img/logo.png" alt="">
+               <img src="../../../assets/img/login-page.webp" alt="">
+            </div>
+            <div class="col-md-6 loginform">
+            <div class="">
+                <div class="loginProcess" *ngIf="loginProcess">
+                    <span class="loader"></span>
+                </div>
+                <h2 >Welcome To Marksman</h2 >
+                <p>Login your account</p>
+                <form [formGroup]="formGroup" (ngSubmit)="login()">
+                   <div class="mb-3">
+                       <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                       <input type="email" class="form-control" formControlName="email" id="exampleFormControlInput1" placeholder="name@example.com">
+                       <div *ngIf="formGroup.controls.email.invalid && formGroup.controls.email.touched">
+                        <div class="errorrs" *ngIf="formGroup.controls.email.errors.required">
+                          Email is required
+                        </div>
+                        <div class="errorrs" *ngIf="formGroup.controls.email.errors.email">
+                          Email is not valid
+                        </div>
+                      </div>
+                      
+                     </div>
+                   <div class="mb-3">
+                       <label for="exampleFormControlInput2" class="form-label">Password</label>
+                       <input type="password" class="form-control" formControlName="password"  id="exampleFormControlInput2" placeholder="Password">
+                       <div *ngIf="formGroup.controls.password.invalid && formGroup.controls.password.touched">
+                        <div class="errorrs" *ngIf="formGroup.controls.password.errors.required">
+                          Password is required
+                        </div>
+                        <div class="errorrs" *ngIf="formGroup.controls.password.errors.minlength">
+                          Password must be at least 6 characters long
+                        </div>
+                    </div>
+                     </div>
+                    
+                   <div class="mb-3">
+                      <button class="theme_btnn">Login</button>
+                     </div>
+                     <div class="alert alert-danger"  *ngIf="errorMessage" role="alert">
+                        {{errorMessage}}
+                      </div>
+                      <p class="d-flex justify-content-between"> <span><span class="material-symbols-outlined"></span> Copyright 2023 Marksman </span><span><a href="https://technologenesis.com/contact.php">Contact Support</a></span></p>
+                </form>
+            </div>
+            
+            
+       
+       
+    </div>
+</div>
+</div>
+</section>

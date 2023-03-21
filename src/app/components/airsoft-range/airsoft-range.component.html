@@ -1,0 +1,304 @@
+<div class="container-fluid">
+  <!-- search-bar -->
+  <div class="bg-colors searchs h-100 p-4 my-3">
+      <form>
+        <input
+          type="text"
+          autocomplete="off"
+          placeholder="Enter Booking ID , Phone Number or Email"
+          [(ngModel)]="searches"
+          name="searches"
+          (keyup.enter)="search()"
+        />
+        <a (click)="search()">
+          <p class="material-icons anchor">search</p>
+        </a>
+      </form>
+    </div>
+    <div *ngIf="isLoading" class="mainloading">
+      <span class="loaderrr"></span>
+    </div>
+    <div *ngIf="!isLoading && !searchResult" class="borderd-box">
+      <div *ngIf="noData" class="alert alert-danger" role="alert">
+       Invalid Booking ID
+      </div>
+    <div class="theme_heading text-center">
+      <h2>Airsoft Range</h2>
+    </div>
+    <form [formGroup]="bookingForm" (ngSubmit)="onSubmit(confirm, success)">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              formControlName="name"
+            />
+            <div
+              *ngIf="name.invalid && (name.dirty || name.touched)"
+              class="text-danger"
+            >
+              <div *ngIf="name.errors.required">Name is required.</div>
+            </div>
+          </div>
+          <div class="form-group mb-3">
+            <label for="number">Number</label>
+            <input
+              type="text"
+              class="form-control"
+              id="number"
+              formControlName="number"
+            />
+            <div
+              *ngIf="number.invalid && (number.dirty || number.touched)"
+              class="text-danger"
+            >
+              <div *ngIf="number.errors.required">Number is required.</div>
+            </div>
+          </div>
+          <div class="form-group mb-3">
+            <label for="package">Package</label>
+            <select
+              class="form-control"
+              id="package"
+              formControlName="package"
+              (change)="onPackageSelect()"
+            >
+              <option *ngFor="let p of packages" [ngValue]="p">
+                {{ p.name }}
+              </option>
+            </select>
+            <div
+              *ngIf="package.invalid && (package.dirty || package.touched)"
+              class="text-danger"
+            >
+              <div *ngIf="package.errors.required">Package is required.</div>
+            </div>
+          </div>
+          <div class="form-group mb-3">
+            <label for="discount">Discount %</label>
+            <input
+              type="number"
+              class="form-control"
+              id="discount"
+              formControlName="discount"
+              (keyup)="calculateDiscount()"
+            />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex align-items-center" style="gap: 10px;">
+            <div>
+              <label for="">Rounds (Max 2)</label>
+              <div class="d-flex align-items-center addons">
+                <button type="button" (click)="decrement()">-</button>
+                <input
+                readonly
+                type="number"
+                formControlName="rounds"
+                minlength="0"
+                />
+                <button type="button" (click)="increment()">+</button>
+              </div>
+            </div>
+            <div>
+              <label for="">Sheet</label>
+              <div class="d-flex align-items-center addons">
+                <button type="button" (click)="decrementSheet()">-</button>
+                <input
+                readonly
+                type="number"
+                formControlName="sheet"
+                minlength="0"
+                />
+                <button type="button" (click)="incrementSheet()">+</button>
+              </div>
+            </div>
+          </div>
+          <ul>
+            <li>
+              Rounds : <span> {{ bookingForm.value.rounds }}</span>
+            </li>
+            <li>
+              Sheet : <span> {{ bookingForm.value.sheet }}</span>
+            </li>
+            <li>
+              Add-ons Charges : <span> {{ addonsCharges }}</span>
+            </li>
+            <li class="d-block"><div>
+                <label for="">Number Of Shooters :</label>
+                <div  class="d-flex align-items-center addons border-0 m-0">
+                  <button type="button" (click)="numberOfShootersRemove()">-</button>
+                  <input
+                  readonly
+                  type="number"
+                  formControlName="numberOfShooters"
+                  minlength="0"
+                  />
+                  <button type="button" (click)="numberOfShootersAdd()">+</button>
+                </div>
+              </div>
+            </li>
+            
+            <li>
+              Sub Total : <span> Rs {{ decimalPipe.transform(subTotal,'1.0-0')  }}</span>
+            </li>
+            <li>
+              Discount : <span> Rs {{ decimalPipe.transform(discountedPrice,'1.0-0')  }}</span>
+            </li>
+            <li>
+              Total : <span> Rs {{ decimalPipe.transform(discountedTotalPrice,'1.0-0') }}</span>
+            </li>
+          </ul>
+          <button type="submit" class="theme_btnn mt-3" style="float: right">
+            Confirm Booking
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="borderd-box position-relative" *ngIf="searchResult && !isLoading">
+    <button class="close-cross" (click)="searchResult=false"><i class="fas fa-times"></i></button>
+    <div class="theme_heading text-center">
+      <h2>Airsoft Range</h2>
+    </div>
+    <div class="row">
+      <div class="col-md-8 ">
+        <h4>Add-ons Details</h4>
+        
+        <div class="row">
+
+        
+        <div class="col-md-4">
+          <div class="add-d">
+            <h3 class="m-0">Air Pistol</h3>
+        <p>Additional 10 rounds + 1 Target Sheet <b> Rs 250</b> (2x allowed)</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="add-d">
+            <h3 class="m-0">Air Rifle Basic </h3>
+        <p>Additional 10 rounds + 1 Target Sheet <b> Rs 250</b> (2x allowed)</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="add-d">
+            <h3 class="m-0">Air Rifle Assault 177</h3>
+        <p>Additional 10 rounds + 1 Target Sheet <b> Rs 250</b> (2x allowed)</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="add-d">
+            <h3 class="m-0">Air Rifle  Precision 22</h3>
+        <p>Additional 10 rounds + 1 Target Sheet <b> Rs 500</b> (2x allowed)</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="add-d">
+            <h3 class="m-0">Air Rifle Assault Premium</h3>
+        <p>Additional 10 rounds + 1 Target Sheet <b> Rs 500</b> (2x allowed)</p>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="col-md-4 addon-details">
+        <form (ngSubmit)="updateaddon(confirm,success,error)" [formGroup]="updateAddon">
+        <h4>Booking Details</h4>
+        <ul>
+          <li>Booking Id <span>#{{responseData.id}}</span></li>
+          <li>Booking date <span>{{responseData.date}}</span></li>
+          <li>Name <span>{{responseData.name}}</span></li>
+          <li>Phone Number <span>{{responseData.number}}</span></li>
+          <li>Package <span>{{responseData.package}}</span></li>
+          <li class="d-block">Add-ons <span>  <div class="d-flex align-items-center" style="gap: 10px;">
+            <div>
+              <label for="">Rounds (Max 2)</label>
+              <div class="d-flex align-items-center addons">
+                <button type="button" (click)="decrement2()">-</button>
+                <input
+                readonly
+                type="number"
+                formControlName="rounds"
+                minlength="0"
+                />
+                <button type="button" (click)="increment2()">+</button>
+              </div>
+            </div>
+            <div>
+              <label for="">Sheet</label>
+              <div class="d-flex align-items-center addons">
+                <button type="button" (click)="decrementSheet2()">-</button>
+                <input
+                readonly
+                type="number"
+                formControlName="sheet"
+                minlength="0"
+                />
+                <button type="button" (click)="incrementSheet2()">+</button>
+              </div>
+            </div> 
+          </div></span></li>
+          <li>Sub Total <span>Rs {{resSubTotal}}</span></li>
+          <li>Discount<span>Rs {{responseData.discount}}</span></li>
+          <li>Total <span>Rs {{resPrice}}</span></li>
+        </ul>
+        <button class="theme_btnn" type="submit">Book</button>
+      </form>
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+<ng-template #confirm let-modal>
+  <div class="confirmModal">
+    <img src="../../../assets/img/speech-bubble.gif" alt="" />
+    <h4 class="modal-title">Are you sure?</h4>
+    <p>Are you sure you want to confirm this Booking?</p>
+
+    <div class="modal-btn d-flex align-items-center justify-content-center">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="modal.dismiss('cancel click')"
+      >
+        Cancel
+      </button>
+      <button type="button" class="btn btn-danger" (click)="modal.close('yes')">
+        Yes
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #success let-modal>
+  <div class="confirmModal">
+    <img src="../../../assets/img/verified.gif" alt="" />
+    <h4 class="modal-title">Booking Has Been Confirmed</h4>
+    <div class="modal-btn d-flex align-items-center justify-content-center">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="modalService.dismissAll('cancel click')"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+
+
+<ng-template #error let-c="close" let-d="dismiss">
+  <div class="confirmModal">
+    <img src="../../../assets/img/invalid.gif" alt="" />
+    <h4 class="modal-title">Error</h4>
+    <p>Please add adons </p>
+    <div class="modal-btn d-flex align-items-center justify-content-center">
+      <button type="button" class="btn btn-secondary" (click)="c('Close click')">Close</button>
+    </div>
+  </div>
+
+</ng-template>

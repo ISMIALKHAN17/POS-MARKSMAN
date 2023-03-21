@@ -1,0 +1,590 @@
+<div class="container-fluid">
+  <!-- search-bar -->
+  <div class="bg-colors searchs h-100 p-4 my-3">
+    <form>
+      <input
+        type="text"
+        autocomplete="off"
+        placeholder="Enter Booking ID , Phone Number or Email"
+        [(ngModel)]="searches"
+        name="searches"
+        (keyup.enter)="search()"
+      >
+      <a (click)="search()">
+        <p class="material-icons anchor">search</p>
+      </a>
+    </form>
+  </div>
+</div>
+<section *ngIf="new_div">
+  <!-- end search-bar -->
+  <div class="theme_heading text-center my-2">
+    <h2>Indoor Cricket</h2>
+  </div>
+  <div class="container-fluid">
+    <!-- date-picker -->
+    <section *ngIf="step == 1">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="datee">
+              <h3 class="h4">Please Select Date</h3>
+            </div>
+          </div>
+          <form #myForm="ngForm" class="p-0">
+            <input
+              type="number"
+              name="inputValues"
+              id=""
+              class="member"
+              placeholder="Number of Players"
+              required
+              [(ngModel)]="inputNumber"
+            />
+            <p class="errorrs" *ngIf="member_error">
+              Please Select Specific Member !
+            </p>
+            <p class="errorrs" *ngIf="member_error2">
+              Number Of Players is required
+            </p>
+          </form>
+          <ngb-datepicker
+            [minDate]="{year: 2023, month: 2, day: 25}"
+            class="booking ng-valid ng-touched ng-dirty"
+            [(ngModel)]="selectedDate"
+            (dateSelect)="onDateSelect($event, myForm)"
+          ></ngb-datepicker>
+        </div>
+      </div>
+    </section>
+    <!-- end date-picker -->
+  </div>
+  <!-- select-time -->
+  <div class="container p-4 my-5" *ngIf="booking && step == 2">
+    <div class="row">
+      <div class="col-md-12"></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="col-md-12">
+          <h3>Book Your Court</h3>
+          <div class="row">
+            <div class="col-md-12">
+              <label for="">From</label>
+              <div class="time_row">
+                <select
+                  name=""
+                  id=""
+                  [(ngModel)]="fromTime"
+                  (ngModelChange)="checkValidity()"
+                >
+                  <option value="default" disabled>Select Hours</option>
+                  <option value="12">12</option>
+                  <option value="13">1</option>
+                  <option value="14">2</option>
+                  <option value="15">3</option>
+                  <option value="16">4</option>
+                  <option value="17">5</option>
+                  <option value="18">6</option>
+                  <option value="19">7</option>
+                  <option value="20">8</option>
+                  <option value="21">9</option>
+                  <option value="22">10</option>
+                  <option value="23">11</option>
+                </select>
+                <span>:</span>
+                <select [(ngModel)]="fromMin" (ngModelChange)="checkValidity()">
+                  <option value="default" disabled>Minutes</option>
+                  <option *ngFor="let it of timecheck" [value]="it">
+                    {{ it }}
+                  </option>
+                </select>
+                <select
+                  [(ngModel)]="fromType"
+                  (ngModelChange)="checkValidity()"
+                  disabled
+                >
+                  <option selected value="AM">AM</option>
+                  <option value="PM">PM</option>
+                </select>
+              </div>
+              <div class="theme_error" *ngIf="errorMessage">
+                <p>{{ errorMessage }}</p>
+              </div>
+            </div>
+            <div class="col-md-12 mt-3 position-relative">
+              <label for="">To</label>
+              <div class="time_row">
+                <select
+                  name=""
+                  id=""
+                  [(ngModel)]="toTime"
+                  (ngModelChange)="checkValidity()"
+                  [disabled]="fromTime == 'default'"
+                >
+                  <option value="default" disabled>Select Hours</option>
+                  <option
+                    *ngFor="let time of endTimeCheck"
+                    [value]="time.value"
+                    [disabled]="fromTime > time.value"
+                  >
+                    {{ time.name }}
+                  </option>
+                </select>
+                <span>:</span>
+                <select [(ngModel)]="toMin" (ngModelChange)="checkValidity()">
+                  <option value="default" disabled>Minutes</option>
+                  <option
+                    *ngFor="let it of timecheck"
+                    [value]="it"
+                    [disabled]="fromMin >= it && fromTime == toTime"
+                  >
+                    {{ it }}
+                  </option>
+                </select>
+                <select
+                  [(ngModel)]="toType"
+                  (ngModelChange)="checkValidity()"
+                  disabled
+                >
+                  <option selected value="AM">AM</option>
+                  <option value="PM">PM</option>
+                </select>
+              </div>
+              <div class="theme_error" *ngIf="check24HoursError">
+                <p>Booking Cant Be Done Before 24 Hours</p>
+              </div>
+              <div class="theme_error" *ngIf="!check24HoursError && hourCheck">
+                <p>You can only book minimum for 1 hour</p>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="buttons_row">
+                <button class="theme_btnn" (click)="step = 1">
+                  <i class="fa-regular fa-arrow-left-long"></i> Back
+                </button>
+                <button
+                  class="theme_btnn"
+                  [disabled]="
+                    fromTime == 'default' ||
+                    fromMin == 'default' ||
+                    toTime == 'default' ||
+                    toMin == 'default'
+                  "
+                  (click)="submitData()"
+                >
+                  Proceed
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h3 class="d-flex justify-content-between">
+          Booked Courts <span class="date">{{ selected_date }}</span>
+        </h3>
+        <div class="loading" *ngIf="isLoading">
+          <span class="load-ani"></span>
+        </div>
+
+        <div
+          *ngIf="!isLoading"
+          class="d-flex align-items-center justify-content-center"
+        >
+          <div *ngIf="bookedTimes.length < 1">
+            <p class="text-center">
+              There is No Booked Slots You Can Book Yours
+            </p>
+          </div>
+
+          <table *ngIf="bookedTimes.length > 0">
+            <tr>
+              <th>From</th>
+              <th>To</th>
+              <th>Status</th>
+              <th>Expire at</th>
+            </tr>
+            <tr *ngFor="let item of bookedTimes">
+              <td>{{ item.user_start_time }}</td>
+              <td>{{ item.user_end_time }}</td>
+              <td>{{ item.book_status }}</td>
+              <td *ngIf="item.book_status == 'Hold'">{{ item.expiry_time }}</td>
+              <td *ngIf="item.book_status == 'Booked'">
+                Booked/{{ item.name }}
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End select-time -->
+  <!-- //end booking -->
+  <div *ngIf="step === 4" class="col-md-12 booking_final">
+    <h3 class="text-center d-flex justify-content-between">
+      Enter Players Details
+      <span>Total Players {{ totalSelectedPlayers }}</span>
+    </h3>
+
+    <div class="row">
+      <div class="col-md-8">
+        <form [formGroup]="form">
+          <div class="row">
+            <div
+              class="col-md-6"
+              *ngFor="let player of totalPlayerArray; index as i"
+            >
+              <h4>Player</h4>
+
+              <input
+                type="tel"
+                placeholder="Number"
+                (ngModelChange)="checkNumber(player, $event)"
+                formControlName="number_{{ player }}"
+              />
+              <div
+                *ngIf="form.get('number_' + player)?.invalid && displayErrors"
+                class="form-error"
+              >
+                Please Enter Correct Phone Number
+              </div>
+              <input
+                type="text"
+                placeholder="Name"
+                formControlName="name_{{ player }}"
+              />
+              <div
+                *ngIf="form.get('name_' + player)?.invalid && displayErrors"
+                class="form-error"
+              >
+                Please Enter Correct Name
+              </div>
+              <div
+                class="form-error"
+                *ngIf="
+                  form.get('number_' + player)?.hasError('invalid') &&
+                  form.get('number_' + player)?.touched
+                "
+              >
+                Number already exists, please enter a different number.
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-4">
+        <h3>Booking Details</h3>
+        <form [formGroup]="bookingForm" (ngSubmit)="saveData(confirm,success)">
+          <ul class="booking_details">
+            <li
+              class="input_li"
+              [ngClass]="{
+                wrong_input: isCheck && bookingForm.get('name').errors?.required
+              }"
+            >
+              Name :
+              <span
+                ><input
+                  formControlName="name"
+                  type="text"
+                  placeholder="Enter Name"
+              /></span>
+            </li>
+            <li
+              class="input_li"
+              [ngClass]="{
+                wrong_input:
+                  (isCheck && bookingForm.get('number').errors?.required) ||
+                  (isCheck && bookingForm.get('number').errors?.pattern)
+              }"
+            >
+              Number :
+              <span
+                ><input
+                  formControlName="number"
+                  type="tel"
+                  placeholder="Enter Phone Number"
+              /></span>
+            </li>
+
+            <li
+              class="input_li"
+              [ngClass]="{
+                wrong_input:
+                  (isCheck && bookingForm.get('email').errors?.required) ||
+                  (isCheck && bookingForm.get('email').errors?.email)
+              }"
+            >
+              Email :
+              <span
+                ><input
+                  formControlName="email"
+                  type="email"
+                  placeholder="Enter Email Adress"
+              /></span>
+            </li>
+
+            <li>
+              Number Of Players :
+              <span>{{ inputNumber }}</span>
+            </li>
+            <li>
+              Date : <span>{{ selected_date }}</span>
+            </li>
+            <li>
+              Time:
+              <span
+                >{{ finalData.user_start_time }} To
+                {{ finalData.user_end_time }}</span
+              >
+            </li>
+            <li>
+              Booked For:
+              <span>{{ finalData.booked_for }}</span>
+            </li>
+            <li class="input_li">Discount  (%): <span>
+              <input type="number" placeholder="Enter Discount" (keyup)="calculateDiscount()"  formControlName="discount">
+               </span>
+            </li>
+            <li>
+              Discounted Price : <span>{{ decimalPipe.transform(discountedPrice, '1.0-0') }}</span>
+            </li>
+            <li>
+              Total : <span>{{ decimalPipe.transform(discountedTotalPrice, '1.0-0') }}</span>
+            </li>
+          </ul>
+          <div class="btnn">
+            <div class="row">
+              <!-- <div class="col-md-6">
+                <select
+                  class="form-select mb-3"
+                  aria-label="Default select example"
+                  formControlName="payment_status"
+                >
+                  <option
+                    *ngFor="let option of paymentStatus"
+                    [disabled]="option.value == ''"
+                    [value]="option.value"
+                  >
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div> -->
+              <!-- <div class="col-md-6">
+                <select
+                  class="form-select mb-3"
+                  aria-label="Default select example"
+                  formControlName="bookingsStatus"
+                  name="status"
+                >
+                  <option
+                    *ngFor="let option of bookingStatus"
+                    [disabled]="option.value == ''"
+                    [value]="option.value"
+                  >
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div> -->
+            </div>
+
+            <button class="pdf theme_btnn float-end" type="submit">
+              Confirm Booking
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="buttons_row">
+        <button class="theme_btnn" (click)="step = 2">
+          <i class="fa-regular fa-arrow-left-long"></i> Back
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- //end booking -->
+</section>
+<!-- search-data -->
+<!-- end search-data -->
+
+<ng-template #confirm let-modal>
+  <div class="confirmModal">
+    <img src="../../../assets/img/speech-bubble.gif" alt="" />
+    <h4 class="modal-title">Are you sure?</h4>
+    <p>Are you sure you want to confirm this Booking?</p>
+
+    <div class="modal-btn d-flex align-items-center justify-content-center">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="modal.dismiss('cancel click')"
+      >
+        Cancel
+      </button>
+      <button type="button" class="btn btn-danger" (click)="modal.close('yes')">
+        Yes
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #success let-modal>
+  <div class="confirmModal">
+    <img src="../../../assets/img/verified.gif" alt="" />
+    <h4 class="modal-title">Booking Has Been Confirmed</h4>
+    <div class="modal-btn d-flex align-items-center justify-content-center">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="step = 1 ; modal.dismiss('cancel click')"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+
+
+
+<div class="position-relative" *ngIf="div">
+  <div class="loading-main" *ngIf="searchIsLoading">
+    <span  class="load-ani"></span>
+  </div>
+  <div class="loading-main" *ngIf="searchError && !searchIsLoading">
+    <div class="alert alert-danger" role="alert">
+      Invalid Booking ID 
+    </div>
+    </div>
+
+  <div *ngIf="!searchIsLoading && !searchError" class="row main-div" >
+      <div class="col-md-8">
+          <div class="boxx text-light">
+              <h3 class="mb-3">Players Details</h3>
+              <table class="table text-light">
+                  <thead>
+                      <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Name</th>
+                          <th scope="col">Number</th>
+                          <!-- <th scope="col">Price</th> -->
+                          <th scope="col">Action</th>
+                      </tr>
+                  </thead>
+                  <tbody *ngIf="search_item">
+                      <tr *ngFor="let player of responseData.player;index as i" [ngClass]="{'disable':player['status'] == '2' }">
+                          <th scope="row">{{i+1}}</th>
+                          <td *ngIf="!isEditing" (dblclick)="isEditing = true"><span class="span">{{player['name']}}</span></td>
+                          <td *ngIf="isEditing"><input [(ngModel)]="player['name']" class="inputs"></td>
+                          <td *ngIf="!isEditing" (dblclick)="isEditing = true"><span class="span">{{player['number']}}</span></td>
+                          <td *ngIf="isEditing"><input [(ngModel)]="player['number']" class="inputs"></td>
+                          <!-- <td>{{player['ticket_price']}}</td> -->
+                          <td>
+                              <div class=" dltt" [ngClass]="{'d-dltt': responseData?.book_status == 'Booked'}">
+                                  <span *ngIf="isloading" class="loaderrr"></span>
+                                  <a [ngClass]="{'d-anchor' : responseData?.book_status == 'Booked' }" class="material-icons dl" *ngIf="player['status'] == 1 && !isloading" (click)="update_players(player['id'],player['status'])" data-toggle="tooltip" data-placement="top" title="Delete">delete</a>
+                              <a [ngClass]="{'d-anchor' : responseData?.book_status == 'Booked' }" class="material-icons dl res" *ngIf="player['status'] == 2 && !isloading" (click)="update_players(player['id'],player['status'])" data-toggle="tooltip" data-placement="top" title="Restore">refresh</a>
+                                  <!-- <a class="material-icons" data-toggle="tooltip" data-placement="top" title="Edit">manage_accounts</a> -->
+                              </div>
+                          </td>
+                      </tr>
+
+                  </tbody>
+              </table>
+          </div>
+      </div>
+      <div class="col-md-4">
+          <div class="box2 text-light">
+              <div class="das">
+                  <h3>Booking Details</h3>
+                  <p class="material-icons text-danger closess" (click)="boxes()"> close</p>
+              </div>
+              <table class="table tabless text-light">
+                  <thead>
+                      <tr>
+                          <th scope="row">Booking ID: </th>
+                          <td> #{{responseData.id}}</td>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngIf='responseData?.book_status == "Hold"  '>
+                          <th scope="row">Name: </th>
+                          <td> {{responseData.name}}</td>
+                      </tr>
+                   <tr *ngIf='responseData?.book_status != "Booked"  '>
+                        <th scope="row">Expire On:</th>
+                        <td>{{ responseData?.book_status }}</td>
+                      </tr>
+                      <tr>
+                          <th scope="row">Number: </th>
+                          <td> {{responseData.phone_no}}</td>
+                      </tr>
+                      <tr>
+                          <th scope="row">Email: </th>
+                          <td> {{responseData.email}}</td>
+                      </tr>
+                      <tr>
+                          <th scope="row">Booking Date: </th>
+                          <td> {{(responseData.select_date) }}</td>
+                      </tr>
+                      <tr>
+                          <th scope="row">Time: </th>
+                          <td> {{responseData.user_start_time}} to {{responseData.user_end_time}}</td>
+                      </tr>
+                      <tr>
+                          <th scope="row">No Of Players: </th>
+                          <td> {{responseData.number_of_player}}</td>
+                      </tr>
+                      <tr>
+                          <th scope="row">Status:   </th>
+                          <td> <span [ngClass]="{'booked':responseData.book_status == 'Booked' , 'expired':responseData.book_status == 'Expired', 'hold':responseData.book_status == 'Hold', 'cancel':responseData.book_status == 'Cancel'}">{{responseData.book_status}}</span></td>
+                      </tr>
+                      <tr *ngIf='responseData?.book_status == "Hold"  '>
+                        <th scope="row">Exipre On: </th>
+                        <td> {{responseData.expiry_time}}</td>
+                    </tr>
+                      <tr *ngIf="responseData.book_status == 'Hold'">
+                          <th scope="row">Time Left: </th>
+                          <td> {{responseData.book_status == "Expired" ? '00:00' : responseData.time_left  }}</td>
+                      </tr>
+                      <tr>
+                          <th scope="row">Booked Date: </th>
+                          <td> {{ (responseData.created_at)}}</td>
+                      </tr>
+                      <tr>
+                          <th scope="row">Total: </th>
+                          <td>{{responseData.price}}</td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+          <form [formGroup]="cricket_update" (submit)="onsubmit(confirm)">
+          <!-- <form [formGroup]="cricket_update" (submit)="onsubmit()"> -->
+        
+              <div class="btnn" *ngIf="responseData.book_status == 'Hold'">
+                  <div class="row">
+                      <div class="col-md-6">
+                  <select class="form-select mb-3" aria-label="Default select example"  formControlName="payment_status" >
+                      <option *ngFor="let option of paymentStatus2" [disabled]="option.value == ''" [value]="option.value">{{option.label}}</option>
+                </select>
+                          <span class="error" *ngIf="submited && cricket_update.controls.book_status.errors?.required">Required</span>
+                      </div>
+                      <div class="col-md-6">
+                          <select class="form-select mb-3" aria-label="Default select example" formControlName="book_status" name="book_status" [ngClass]="{'disabled':responseData.book_status == 'Expired'}">
+                    <option *ngFor="let option of bookingStatus2" [disabled]="option.value == ''" [value]="option.value">{{option.label}}</option>
+                </select>
+                          <span class="error" *ngIf="submited && cricket_update.controls.book_status.errors?.required">Required</span>
+                      </div>
+
+                  </div>
+
+                  <button class="pdf theme_btnn float-end" [disabled]="responseData.book_status == 'Expired'"  [ngClass]="{'disabled':responseData.book_status == 'Expired'}">Confirm Booking</button>
+              </div>
+          </form>
+      </div>
+      <button class="theme_btnn" (click)="print()">Print Ticket</button>
+  </div>
+</div>
+
+
+<!-- end search-data -->

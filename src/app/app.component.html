@@ -1,0 +1,2 @@
+<app-main-dashboard *ngIf="login"></app-main-dashboard>
+<app-user-login (loggedIn)="onLoggedIn($event)" *ngIf="!login"></app-user-login>

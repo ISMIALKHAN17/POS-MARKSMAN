@@ -1,0 +1,80 @@
+<div class="container-fluid position-relative pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="theme_heading text-center">
+            <h2>Dashboard</h2>
+        </div>
+        <div *ngIf="isLoading" class="loading-main">
+            <span class="loaderrr"></span>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="report_box">
+                    <h2><span>Time <span>{{ time | date: 'hh:mm:ss a' }}</span></span> <span>Date <span>{{time | date : 'dd-MM-yyyy'}}</span></span></h2> 
+                </div>
+            </div>
+        
+            <div class="col-md-3">
+                <div class="report_box">
+                    <h3>Paintball</h3>
+                    <h5><span>Total Bookings</span> <span>{{data.paintballTotalBooking ?? 0}}</span></h5>  
+                    <h5><span>Total Revenue</span> <span>Rs {{decimalPipe.transform(data.paintballTotalPrice,'1.0-0') ?? 0}}</span></h5>  
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="report_box">
+                    <h3>Indoor Cricket</h3>
+                    <h5><span>Total Bookings</span> <span>{{data.cricketTotalBooking ?? 0}}</span></h5>  
+                    <h5><span>Total Revenue</span> <span>Rs {{decimalPipe.transform(data.cricketTotalPrice,'1.0-0') ?? 0}}</span></h5>  
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="report_box">
+                    <h3>Badminton</h3>
+                    <h5><span>Total Bookings</span> <span>{{data.badmintonTotalBooking ?? 0}}</span></h5>  
+                    <h5><span>Total Revenue</span> <span>Rs {{decimalPipe.transform(data.badmintonTotalPrice,'1.0-0') ?? 0}}</span></h5>  
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="report_box">
+                    <h3>Archery </h3>
+                    <h5><span>Total Bookings</span> <span>{{  data.archeryTotalBooking }}</span></h5>  
+                    <h5><span>Total Revenue</span> <span>Rs {{decimalPipe.transform(data.archeryTotalPrice ,'1.0-0')}}</span></h5>  
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="report_box">
+                    <h3>Airsoft Range</h3>
+                    <h5><span>Total Bookings</span> <span>{{data.airsoftTotalBooking }}</span></h5>  
+                    <h5><span>Total Revenue</span> <span>Rs {{ decimalPipe.transform(data.airsoftTotalPrice,'1.0-0')}}</span></h5>  
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="report_box">
+                    <h3>Gel Blaster</h3>
+                    <h5><span>Total Bookings</span> <span>{{ data.gelblasterTotalBooking}}</span></h5>  
+                    <h5><span>Total Revenue</span> <span>Rs {{ decimalPipe.transform(data.gelblasterTotalPrice,'1.0-0')}}</span></h5>  
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="report_box">
+                    <h3>Futsal</h3>
+                    <h5><span>Total Bookings</span> <span>{{ 0}}</span></h5>  
+                    <h5><span>Total Revenue</span> <span>Rs {{ 0}}</span></h5>  
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="report_box">
+                    <h3>IDPA Challange</h3>
+                    <h5><span>Total Bookings</span> <span>{{ 0}}</span></h5>  
+                    <h5><span>Total Revenue</span> <span>Rs {{ 0}}</span></h5>  
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="report_box">
+                    
+                    <h4><span>Total Revenue</span>  <span>{{decimalPipe.transform(data.totalPrice,'1.0-0') ?? 0}}</span> <button class="theme_btnn" (click)="print()">Print</button></h4> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

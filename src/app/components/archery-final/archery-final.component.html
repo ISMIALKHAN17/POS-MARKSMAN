@@ -1,0 +1,97 @@
+<div class="container-fluid">
+    <!-- search-bar -->
+    <div class="bg-colors searchs h-100 p-4 my-3">
+        <div class="theme_heading text-center">
+            <h2>Archery</h2>
+        </div>
+        <form [formGroup]="bookingForm" (ngSubmit)="onSubmit(confirm,success)">
+<div class="row">
+   <div class="col-md-8">
+    <div class="form-group ">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" formControlName="name">
+      <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
+      <div *ngIf="name.errors.required">
+          Name is required.
+      </div>
+      </div>
+  </div>
+  <div class="form-group ">
+      <label for="number">Number</label>
+      <input type="text" class="form-control" id="number" formControlName="number">
+      <div *ngIf="number.invalid && (number.dirty || number.touched)" class="text-danger">
+      <div *ngIf="number.errors.required">
+          Number is required.
+      </div>
+      </div>
+  </div>
+  <div class="form-group ">
+      <label for="package">Package</label>
+      <select class="form-control" id="package" formControlName="package"  (change)="onPackageSelect()">
+      <option *ngFor="let p of packages" [selected]="p.name == 'Basic'" [ngValue]="p" >{{p.name}}</option>
+      </select>
+      <div *ngIf="package.invalid && (package.dirty || package.touched)" class="text-danger">
+      <div *ngIf="package.errors.required">
+          Package is required.
+      </div>
+      </div>
+  </div>
+  <div class="form-group ">
+      <label for="discount">Discount %</label>
+      <input type="number" class="form-control" id="discount" formControlName="discount" (keyup)="calculateDiscount()">
+  </div>
+   </div>
+    <div class="col-md-4">
+      <ul>
+        <li>Sub Total : <span> Rs {{subTotal}}</span></li>
+        <li>Discount : <span> Rs {{discountedPrice}}</span></li>
+        <li>Total : <span> Rs {{discountedTotalPrice}}</span></li>
+      </ul>
+      <button type="submit" class="theme_btnn mt-3">Book</button>
+    </div>
+  </div>
+
+        
+        </form>
+        
+    </div>
+</div>
+
+
+<ng-template #confirm let-modal>
+<div class="confirmModal">
+  <img src="../../../assets/img/speech-bubble.gif" alt="" />
+  <h4 class="modal-title">Are you sure?</h4>
+  <p>Are you sure you want to confirm this Booking?</p>
+
+  <div class="modal-btn d-flex align-items-center justify-content-center">
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      (click)="modal.dismiss('cancel click')"
+    >
+      Cancel
+    </button>
+    <button type="button" class="btn btn-danger" (click)="modal.close('yes')">
+      Yes
+    </button>
+  </div>
+</div>
+</ng-template>
+
+<ng-template #success let-modal>
+<div class="confirmModal">
+  <img src="../../../assets/img/verified.gif" alt="" />
+  <h4 class="modal-title">Booking Has Been Confirmed</h4>
+  <div class="modal-btn d-flex align-items-center justify-content-center">
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      (click)="modal.dismiss('cancel click')"
+    >
+      Close
+    </button>
+  </div>
+</div>
+</ng-template>
+

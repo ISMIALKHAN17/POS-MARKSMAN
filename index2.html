@@ -1,0 +1,63 @@
+<html>
+<head>
+    <title>Print and Cut</title>
+    <style>
+     @media print {
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .page-break {
+    page-break-before: always;
+  }
+  
+  .content-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  .content {
+    padding: 10px;
+  }
+
+  /* .content p {
+    page-break-inside: auto;
+  } */
+
+  .content .page-break {
+    page-break-before: always !important;
+  }
+
+  .content p.no-page-break {
+    page-break-inside: avoid !important;
+  }
+  
+  @page {
+    /* Set the size to auto */
+    size: auto;
+    /* Set the margin to zero */
+    margin: 0;
+  }
+}
+
+
+    </style>
+
+</head>
+<body>
+<button onclick="window.print()">Print</button>
+<div class="content-wrapper">
+    <div class="content">
+         <p class="no-page-break">Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sit saepe ipsa nemo vitae ab explicabo quia rem? Vel, magnam temporibus. Aliquam eum est consequatur culpa nemo vero dolore illo exercitationem, voluptatem quae laboriosam delectus accusamus aperiam veritatis consequuntur mollitia itaque! Minus error sint rem consequuntur non adipisci quae! Harum error nihil vel, molestias dolores voluptas odit eaque veniam quaerat in iure veritatis corrupti, inventore placeat cupiditate! Cum reprehenderit, tempore sunt sit non explicabo reiciendis minus, deserunt accusantium, nesciunt laborum possimus. Sequi, vitae expedita incidunt sint officiis ipsum aut exercitationem nemo culpa provident illo laudantium iure, labore quo reiciendis dolore omnis nesciunt explicabo odio facilis eos in. Fuga cum laborum impedit quam accusamus nesciunt. Quo laudantium veniam perspiciatis inventore placeat iste consequuntur, architecto ratione debitis, voluptates enim. Quis dicta maiores nisi quae facere ipsum debitis nulla magni distinctio blanditiis doloribus animi cum, harum praesentium iusto, accusantium porro neque aperiam! Dolorum suscipit aspernatur iure id voluptatem ut deserunt, numquam unde cupiditate nihil eius, tempora earum obcaecati totam voluptate nobis dolorem labore magni doloremque excepturi? Sunt iste nobis incidunt veniam culpa maxime repudiandae. Laboriosam, fugiat corrupti autem tempore ratione sint cupiditate fugit beatae natus quisquam delectus dicta consectetur debitis eligendi quos quam dolorum porro! Distinctio est deserunt vero quo numquam eveniet similique quia voluptates rem nihil praesentium quibusdam alias, quam natus vitae voluptatibus sequi magnam nam eligendi. Facere pariatur eveniet, fugit veniam velit et cumque quidem ullam aperiam. Neque esse voluptatum fugit, est rerum odit dicta accusantium excepturi. Odio omnis incidunt, dolorum velit dicta veritatis error, aspernatur adipisci, commodi eligendi aliquam modi consequuntur architecto voluptatum doloremque magni consectetur maiores ducimus totam vitae voluptas tenetur expedita! Ea eveniet in sequi veniam quae provident asperiores veritatis laudantium explicabo porro molestias, suscipit ullam, saepe voluptatum labore praesentium aut minus fugiat non similique. Assumenda, porro minima!</p>
+      <div class="page-break"></div>
+      <p class="no-page-break">Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sit saepe ipsa nemo vitae ab explicabo quia rem? Vel, magnam temporibus. Aliquam eum est consequatur culpa nemo vero dolore illo exercitationem, voluptatem quae laboriosam delectus accusamus aperiam veritatis consequuntur mollitia itaque! Minus error sint rem consequuntur non adipisci quae! Harum error nihil vel, molestias dolores voluptas odit eaque veniam quaerat in iure veritatis corrupti, inventore placeat cupiditate! Cum reprehenderit, tempore sunt sit non explicabo reiciendis minus, deserunt accusantium, nesciunt laborum possimus. Sequi, vitae expedita incidunt sint officiis ipsum aut exercitationem nemo culpa provident illo laudantium iure, labore quo reiciendis dolore omnis nesciunt explicabo odio facilis eos in. Fuga cum laborum impedit quam accusamus nesciunt. Quo laudantium veniam perspiciatis inventore placeat iste consequuntur, architecto ratione debitis, voluptates enim. Quis dicta maiores nisi quae facere ipsum debitis nulla magni distinctio blanditiis doloribus animi cum, harum praesentium iusto, accusantium porro neque aperiam! Dolorum suscipit aspernatur iure id voluptatem ut deserunt, numquam unde cupiditate nihil eius, tempora earum obcaecati totam voluptate nobis dolorem labore magni doloremque excepturi? Sunt iste nobis incidunt veniam culpa maxime repudiandae. Laboriosam, fugiat corrupti autem tempore ratione sint cupiditate fugit beatae natus quisquam delectus dicta consectetur debitis eligendi quos quam dolorum porro! Distinctio est deserunt vero quo numquam eveniet similique quia voluptates rem nihil praesentium quibusdam alias, quam natus vitae voluptatibus sequi magnam nam eligendi. Facere pariatur eveniet, fugit veniam velit et cumque quidem ullam aperiam. Neque esse voluptatum fugit, est rerum odit dicta accusantium excepturi. Odio omnis incidunt, dolorum velit dicta veritatis error, aspernatur adipisci, commodi eligendi aliquam modi consequuntur architecto voluptatum doloremque magni consectetur maiores ducimus totam vitae voluptas tenetur expedita! Ea eveniet in sequi veniam quae provident asperiores veritatis laudantium explicabo porro molestias, suscipit ullam, saepe voluptatum labore praesentium aut minus fugiat non similique. Assumenda, porro minima!</p>
+    </div>
+  </div>
+  
+      
+  
+</body>
+</html>

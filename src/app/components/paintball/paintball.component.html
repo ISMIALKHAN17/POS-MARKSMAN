@@ -1,0 +1,678 @@
+<div class="container-fluid">
+    <!-- search-bar -->
+    <div class="bg-colors searchs h-100 p-4 my-3">
+        <form>
+            <input type="number" autocomplete="off" placeholder="Enter Booking ID , Phone Number or Email" [(ngModel)]="searches" name="searches" (keyup.enter)="search()">
+            <a (click)="search()">
+                <p class="material-icons anchor">search</p>
+            </a>
+        </form>
+    </div>
+     <!-- end search-bar -->
+     <div class="theme_heading text-center">
+        <h2>Paintball</h2>
+    </div>
+     <!-- date-picker -->
+     <section [hidden]="isDateSelected" class="position-relative" *ngIf="new_div">
+        <div class="s_loading blur" *ngIf="loadingSearch">
+            <span class="loader"></span>
+        </div>
+        <div class="no_data blur" *ngIf="noData && !loadingSearch">
+            <p>Invalid Booking ID</p>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="datee">
+                        <h3 class="h4">Please Select Date</h3>
+                        <p> {{minDate.day}} - {{ms[minDate.month]}} - {{minDate.year}}</p>
+                    </div>
+                </div>
+                <form #myForm="ngForm" class="p-0">
+                <input type="number" name="inputValues" id="" class="member" placeholder="Number of Players" required [(ngModel)]="inputNumber">
+                <p class="errorrs" *ngIf="member_error">Please Select Specific Member !</p>
+                <p class="errorrs" *ngIf="member_error2">Please Select Number Of Players !</p>
+                </form>
+                <ngb-datepicker  [minDate]="{year: 2023, month: 2, day: 25}" class="booking ng-valid ng-touched ng-dirty" [(ngModel)]="selectedDate" (dateSelect)="onDateSelect($event, myForm)"></ngb-datepicker>
+            </div>
+        </div>
+    </section>
+    <!-- end date-picker -->
+    <!-- timeslot -->
+    <section *ngIf="isDateSelected && new_div2">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="select-time">
+                        <span>Select Time Slot</span>
+                        <div class="loader-div"  *ngIf="preloaderr">
+                        <div class="loader"></div>
+                    </div>
+                        <div class="time-box-wrp" *ngIf="!preloaderr">
+                            <!-- deactive -->
+                            <div class="time-btn"  [ngClass]="{'deactive':btn.book_status == 'Deactive' , 'active':btn.book_status == 'Active' }"  *ngFor="let btn of time_btn" >
+                            <div class="" (click)="open(content,btn)"  >
+                                <input type="radio" name="time" value="{{btn.id}}">
+                                <span>{{btn.name}}</span>
+                            </div>
+                          
+                            <p> Available : {{btn.avaliable}} </p>
+                            <span class="error" *ngIf="btn.book_status == 'Deactive'">You cant Book These Slots </span>
+                        </div>
+                            
+                        </div>
+                        <button id="prev_btn" class="theme_btnn mt-3" (click)="onPreviousClick()"><i class="fa-regular fa-arrow-left-long"></i> Previous </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+      <!--end timeslot -->
+    <!-- search-data -->
+    <div class="position-relative" *ngIf="div">
+        <div class="s_loading blur" *ngIf="loadingSearch">
+            <span class="loader"></span>
+        </div>
+        <div *ngIf="!noData" class="row main-div" >
+            <div class="col-md-8">
+                <div class="boxx text-light">
+                    <div class="d-flex justify-content-between align-items-center add-player">
+                      <h3 class="mb-3">Players Details</h3> <span><button [disabled]="availablePlayersSearch[0].Remaning == 0 || user_detail.book_status == 'Booked' || user_detail.book_status == 'Expired'" (click)="openAddPlayer(addPlayer)">+</button><span>{{availablePlayersSearch[0].Remaning}} Slots Available</span></span>
+                    </div>
+                    <table class="table text-light">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Number</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngIf="search_item">
+                            <tr *ngFor="let player of responseData.player;index as i" [ngClass]="{'disable':player['status'] == '2' }">
+                                <th scope="row">{{i+1}}</th>
+                                <td *ngIf="!isEditing" (dblclick)="isEditing = true"><span class="span">{{player['name']}}</span></td>
+                                <td *ngIf="isEditing"><input [(ngModel)]="player['name']" class="inputs"></td>
+                                <td *ngIf="!isEditing" (dblclick)="isEditing = true"><span class="span">{{player['number']}}</span></td>
+                                <td *ngIf="isEditing"><input [(ngModel)]="player['number']" class="inputs"></td>
+                                <td>Rs {{decimalPipe.transform(player['ticket_price'],'1.0-0')}}</td>
+                                <td>
+                                    <div class=" dltt" [ngClass]="{'d-dltt': user_detail.book_status == 'Booked' || user_detail.book_status == 'Expired'}">
+                                        <span *ngIf="isloading" class="loaderrr"></span>
+                                        <a [ngClass]="{'d-anchor' : user_detail.book_status == 'Booked' || user_detail.book_status == 'Expired' }" class="material-icons dl" *ngIf="player['status'] == 1 && !isloading" (click)="update_players(player['id'],player['status'])" data-toggle="tooltip" data-placement="top" title="Delete">delete</a>
+                                    <a [ngClass]="{'d-anchor' : user_detail.book_status == 'Booked' || user_detail.book_status == 'Expired' }" class="material-icons dl res" *ngIf="player['status'] == 2 && !isloading" (click)="update_players(player['id'],player['status'])" data-toggle="tooltip" data-placement="top" title="Restore">refresh</a>
+                                        <!-- <a class="material-icons" data-toggle="tooltip" data-placement="top" title="Edit">manage_accounts</a> -->
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4">
+              <form [formGroup]="paintball_update" (submit)="onsubmit(confirm)">
+                <div class="box2 text-light">
+                    <div class="das">
+                        <h3>Booking Details</h3>
+                        <p class="material-icons text-danger closess" (click)="boxes()"> close</p>
+                    </div>
+                    <table class="table tabless text-light">
+                        <thead>
+                            <tr>
+                                <th scope="row">Booking ID: </th>
+                                <td> #{{user_detail.id}}</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Name: </th>
+                                <td> {{user_detail.name}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Number: </th>
+                                <td> {{user_detail.phone_no}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Email: </th>
+                                <td> {{user_detail.email}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Booking Date: </th>
+                                <td> {{(user_detail.select_date) }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Slot: </th>
+                                <td> {{user_detail['slot'][0]['name']}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">No Of Players: </th>
+                                <td> {{user_detail.no_of_players}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Exclusive: </th>
+                                <td>{{user_detail.exclusivity == 1 ? 'Exclusive':'Not Exclusive'}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Status: </th>
+                                <td> <span [ngClass]="{'booked':user_detail.book_status == 'Booked' , 'expired':user_detail.book_status == 'Expired', 'hold':user_detail.book_status == 'Hold', 'cancel':user_detail.book_status == 'Cancel'}">{{user_detail.book_status}}</span></td>
+                            </tr>
+                            <tr *ngIf="user_detail.book_status == 'Hold'  ">
+                                <th scope="row">Expire On: </th>
+                                <td> {{user_detail.exp_date}}</td>
+                            </tr>
+                            <tr *ngIf="user_detail.book_status != 'Booked'">
+                                <th scope="row">Time Left: </th>
+                                <td> {{user_detail.book_status == "Expired" ? '00:00' : user_detail.time_left}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Booked Date: </th>
+                                <td> {{ (user_detail.created_at)}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Sub Total: </th>
+                                <td *ngIf="user_detail.subtotal">Rs {{decimalPipe.transform(user_detail.subtotal,'1.0-0')}}</td>
+                                <td *ngIf="!user_detail.subtotal">Rs {{decimalPipe.transform(user_detail.total_price,'1.0-0')}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Discount: </th>
+                                <td *ngIf="user_detail.book_status != 'Hold'">Rs  {{decimalPipe.transform(user_detail.discount,'1.0-0')}}</td>
+                                <td *ngIf="user_detail.book_status == 'Hold'"><input type="text" (keyup)="searchCalculateDiscount()" formControlName="discount" placeholder="Enter Discount %"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Total: </th>
+                                <td>Rs {{decimalPipe.transform(totalPrice,'1.0-0')}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                    <div class="btnn" *ngIf="user_detail.book_status == 'Hold'" >
+                      <div class="row">
+                        <div class="col-md-6">
+                          <select class="form-select mb-3" aria-label="Default select example" formControlName="payment_status" [disabled]="user_detail.book_status == 'Expired' || user_detail.book_status == 'Booked' " [ngClass]="{'disabled':user_detail.book_status == 'Expired' || user_detail.book_status == 'Booked'}">
+                            <option *ngFor="let option of paymentStatus" [disabled]="option.value == ''" [value]="option.value">{{option.label}}</option>
+                          </select>
+                        </div>
+                        <div class="col-md-6">
+                          <select class="form-select mb-3" aria-label="Default select example" formControlName="status" name="status" [ngClass]="{'disabled':user_detail.book_status == 'Expired' || user_detail.book_status == 'Booked'}">
+                            <option *ngFor="let option of bookingStatus" [disabled]="option.value == ''" [value]="option.value">{{option.label}}</option>
+                          </select>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-error" *ngIf="checkc && paintball_update.get('status').invalid || (checkc && paintball_update.get('payment_status').invalid) ">
+                                Please select Payment and Booking
+                            </div>
+                        </div>
+                      </div>
+                      <button class="pdf theme_btnn float-end" [disabled]="user_detail.book_status == 'Expired' || user_detail.book_status == 'Booked' " [ngClass]="{'disabled':user_detail.book_status == 'Expired' || user_detail.book_status == 'Booked'}">Confirm Booking</button>
+                    </div>
+                    <button *ngIf="user_detail.book_status == 'Booked'" class="theme_btnn" (click)="print()" >Print Ticket</button>
+                  </form>
+            </div>
+        </div>
+    </div>
+    <!-- end search-data -->
+</div>
+<!-- modal  -->
+<ng-template #content let-modal>
+    <div  class="modal-body">
+        <div  class="modal-content">
+           <div  class="text-center">
+              <span  class="close-btn"><i (click)="modal.close('Save click')"  class="material-icons">close</i></span>
+              <h2 >Select Slots</h2>
+              <h3  class="d-flex justify-content-between ptext">
+                 <span  id="slot-date">
+                    Date:  {{datee}} 
+                    <p >Number Of Players : {{inputNumber}}</p>
+                 </span>
+                 <span  id="slot-time">
+                    Time: {{ slot_name ?? '-'}}  
+                    <p >Selected Players : {{addedPlayers}} </p>
+                 </span>
+              </h3>
+           </div>
+           <h4  class="text-center">Team 1</h4>
+           <ul class="slots">
+            <li *ngFor="let seat of seats | slice : 0 : 8; index as i">
+                <input
+                id="{{ seat.name }}"
+                class="checkboxx"
+                type="checkbox"
+                (click)="toggle = !toggle"
+                [id]="seat.id+'a'"
+                value="{{seat.id}}"
+                [(ngModel)]="seat.checked"
+                [(ngModel)]="checkboxValue[i]"
+              />
+              <span class="slot_box" *ngIf="loadingSlots"><span class="slots_loading"></span></span>
+              <span class="slots" (click)="selected = seat; name = arryData[i] ; number = arrynumbers[i]; numberMatched = false" *ngIf="!loadingSlots">{{ seat.value }}</span>
+              <span class="edit_icon"
+                ><i class="material-icons">edit</i
+              ></span>
+              <div class="input_field" *ngIf="selected === seat && booked == false">
+                <input
+                type="tel"
+                  placeholder="Enter Player Number"
+                  [(ngModel)]="number"
+                  #valueRef="ngModel"
+                  (input)="checkNumber()"
+                  pattern="03[0-9]{9}" required #numberInput [ngClass]="{'invalid': !submited || valueRef.errors?.['pattern'] || numberMatched}"
+              />
+              <span *ngIf="numberMatched" class="cutom_tooltip top">Number Already Exist</span>
+              <input
+                type="text"
+                #nameInput
+                [(ngModel)]="name"
+                placeholder="Enter Player Name"
+                #nameval="ngModel"
+                pattern="[a-zA-Z ]*" required  [ngClass]="{'invalid':  !submited || nameval.errors?.['pattern'] }"
+              />
+              <div
+              class="d-flex justify-content-center align-items-center"
+              style="gap: 10px"
+            >
+              <button class="book" [disabled]="nameval.errors?.['pattern'] || valueRef.errors?.['pattern'] || numberMatched" (click)="bookSlot(seat, [seat.id])">
+                <i class="material-icons">done</i>
+              </button>
+              <button
+                class="book discard"
+                (click)="uncheckCheckbox(seat, [seat.id])"
+              >
+                <i class="material-icons">close</i>
+              </button>
+            </div>
+              </div>
+            </li>
+          </ul>
+           <div  class="text-center">
+              <h2 >VS</h2>
+              <h4 >Team 2</h4>
+           </div>
+           <ul class="slots">
+            <li *ngFor="let seat of seats  | slice : 8;">
+              <input
+              class="checkbox"
+                id="{{ seat.name }}"
+                type="checkbox"
+                class="checkboxx"
+                [id]="seat.id+'a'"
+                value="{{seat.id}}"
+                (click)="toggle = !toggle"
+                [(ngModel)]="seat.checked"
+                [(ngModel)]="checkboxValue[seat.id]"
+              />
+              <span class="slot_box" *ngIf="loadingSlots"><span class="slots_loading"></span></span>
+              <span class="slots" (click)="selected = seat ; name = arryData[seat.id] ; number = arrynumbers[seat.id]" *ngIf="!loadingSlots">{{ seat.value }}</span>
+              <span class="edit_icon"
+              ><i class="material-icons">edit</i
+            ></span>
+              <div class="input_field" *ngIf="selected === seat && booked == false">
+                <input
+                type="tel"
+                  placeholder="Enter Player Number"
+                  [(ngModel)]="number"
+                  #valueRef="ngModel"
+                  (input)="checkNumber()"
+                  pattern="03[0-9]{9}" required #numberInput [ngClass]="{'invalid': !submited || valueRef.errors?.['pattern'] || numberMatched}"
+              />
+              <span *ngIf="numberMatched" class="cutom_tooltip top">Number Already Exist</span>
+              <input
+                type="text"
+                #nameInput
+                [(ngModel)]="name"
+                placeholder="Enter Player Name"
+                #nameval="ngModel"
+                pattern="[a-zA-Z ]*" required  [ngClass]="{'invalid':  !submited || nameval.errors?.['pattern'] }"
+              />
+                <div
+                  class="d-flex justify-content-center align-items-center"
+                  style="gap: 10px"
+                >
+                  <button class="book" [disabled]="nameval.errors?.['pattern'] || valueRef.errors?.['pattern'] || numberMatched" (click)="bookSlot(seat, [seat.id])">
+                    <i class="material-icons">done</i>
+                  </button>
+                  <button
+                    class="book discard"
+                    (click)="uncheckCheckbox(seat, [seat.id])"
+                  >
+                    <i class="material-icons">close</i>
+                  </button>
+                </div>
+              </div>
+            </li>
+          </ul>
+           <div  class="text-center">
+            <p class="errr" *ngIf="errr">The number of slots selected should be same as number of players</p>
+           </div>
+           <ul  class="d-flex justify-content-center" style="gap: 10px;">
+              <li> <button
+                (click)="goToNextPage('proceed-booking', content)"
+                aria-label="Close"
+                class="theme_btnn"
+              >
+                Proceed
+              </button></li>
+           </ul>
+        </div>
+     </div>
+</ng-template>
+<!-- modal end -->
+<!-- print -->
+<div class="print-area d-none" #printArea *ngIf="div">
+    <div id="invoice-POS">
+        <div
+        class="bill"
+        style="
+          width: 100%;
+          margin: 0 auto;
+          text-align: center;
+          padding:0px 0px;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+            Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+            sans-serif;
+          font-weight: 400;
+          font-size: 10px;
+        "
+      >
+        <div
+          class="flex"
+          style="display: flex; justify-content: space-between; margin: 10px 0px"
+        >
+          <span>Cashier</span>
+          <span>{{cashierName}}</span>
+        </div>
+        <img src="../../../assets/img/logo.png" width="200px" alt="" />
+        <div
+          class="flex"
+          style="display: flex; justify-content: space-between; margin: 10px 0px"
+        >
+          <span>Booking Id: <b>#{{user_detail.id}}</b></span>
+          <span>Game: <b>{{user_detail.game_name}}</b></span>
+        </div>
+        <div
+          class="flex"
+          style="display: flex; justify-content: space-between; margin: 10px 0px"
+        >
+          <span>Name: <b>{{user_detail.name}}</b></span>
+          <span>Phone: <b>{{user_detail.phone_no}}</b></span>
+        </div>
+        <div
+          class="flex"
+          style="display: flex; justify-content: space-between; margin: 10px 0px"
+        >
+          <span>Email: <b>{{user_detail.email}}</b></span>
+          <span>Slot: <b>{{user_detail.slot[0]['name']}}</b></span>
+        </div>
+        <div class="flex" style="justify-content: center;display: flex;  margin: 10px 0px">
+          <span>Date: <b>{{user_detail.select_date}}</b></span>
+        </div>
+        <div class="players">
+          <table style="font-size: 10px;width: 100%; border-top: 1px solid #000">
+            <tr>
+              <th style="text-align: left;">#</th>
+              <th style="text-align: left;">Name</th>
+              <th style="text-align: left;">Phone</th>
+              <th style="text-align: left;">Amount</th>
+            </tr>
+            <tr *ngFor="let player of responseData.player;index as i">
+                <div *ngIf="player['status'] == 1">
+                <td><span>{{i+1}}</span></td>
+                <td><span>{{player['name']}}</span></td>
+                <td><span>{{player['number']}}</span></td>
+                <td><span>Rs  {{decimalPipe.transform(player['ticket_price'],'1.0-0')}}</span></td>
+                </div>     
+            </tr>
+          </table>
+          <div class="flex" style="border-top: 1px solid #000 ;display: flex; justify-content: space-between; margin: 10px 0px">
+            <span><b>Sub Total</b></span>
+            <span><b>Rs {{decimalPipe.transform(user_detail.subtotal,'1.0-0')}}</b></span>
+          </div>
+          <div class="flex" style="display: flex; justify-content: space-between; margin: 10px 0px">
+            <span><b>Discount</b></span>
+            <span><b>Rs {{decimalPipe.transform(user_detail.discount,'1.0-0')}}</b></span>
+          </div>
+          <div class="flex" style="border-bottom: 1px solid #000 ;display: flex; justify-content: space-between; margin: 10px 0px">
+            <span><b>Total</b></span>
+            <span><b>Rs {{decimalPipe.transform(user_detail.total_price,'1.0-0')}}</b></span>
+          </div>
+          <div class="footer" style="text-align:  center;margin-bottom: 20px;">
+            <p style="margin: 0px">Thank You for Booking</p>
+            <p style="margin: 0px">Powered by Technologenesis</p>
+          </div>
+        </div>
+
+        <!-- <div class="footer"></div> -->
+        <div id="invoice-POS">
+           
+          <div
+          class="flex"
+          style="display: flex; justify-content: space-between; margin: 10px 0px"
+        >
+          <span>Booking Id: <b>#{{user_detail.id}}</b></span>
+          <span>Game: <b>{{user_detail.game_name}}</b></span>
+        </div>
+        <div
+          class="flex"
+          style="display: flex; justify-content: space-between; margin: 10px 0px"
+        >
+          <span>Name: <b>{{user_detail.name}}</b></span>
+          <span>Phone: <b>{{user_detail.phone_no}}</b></span>
+        </div>
+        <div
+          class="flex"
+          style="display: flex; justify-content: space-between; margin: 10px 0px"
+        >
+          <span>Email: <b>{{user_detail.email}}</b></span>
+          <span>Slot: <b>{{user_detail.slot[0]['name']}}</b></span>
+        </div>
+        <div class="flex" style="justify-content: center;display: flex;  margin: 10px 0px">
+          <span>Date: <b>{{user_detail.select_date}}</b></span>
+        </div>
+      
+          <table style="width: 100%;" class="table">
+            <tr>
+              <td style="border: 1px solid;">Teams</td>
+              <td style="border: 1px solid;text-align: center;">R1</td>
+              <td style="border: 1px solid;text-align: center;">R2</td>
+              <td style="border: 1px solid;text-align: center;">R3</td>
+            </tr>
+            <tr >
+              <td style="border: 1px solid;">Orange</td>
+              <td style="border: 1px solid;text-align: center;">-</td>
+              <td style="border: 1px solid;text-align: center;">-</td>
+              <td style="border: 1px solid;text-align: center;">-</td>
+            </tr>
+            <tr >
+              <td style="border: 1px solid;">Yellow </td>
+              <td style="border: 1px solid;text-align: center;">-</td>
+              <td style="border: 1px solid;text-align: center;">-</td>
+              <td style="border: 1px solid;text-align: center;">-</td>
+            </tr>
+          </table>
+           
+      
+        <div id="table" >
+          <table  class="table" style="font-size: 10px; width: 100%; margin-top: 20px;border-top: 1px solid #000;border-left: 1px solid #000;">
+            <tbody>
+              <tr class="tabletitle">
+                <td >
+                  Player Name
+                </td>
+                <td style="text-align:center;border-left: 1px solid #000;border-right: 1px solid #000;" class="Hours">
+                  TM
+                </td>
+                <td style="text-align:center;border-right: 1px solid #000;" class="Hours">
+                  CI
+                </td>
+                
+              </tr>
+             
+              <tr *ngFor="let player of responseData.player;index as i">
+                <div *ngIf="player['status'] == 1">
+                <td><span>{{player['name']}}</span></td>
+                <td style="text-align:center;border-left: 1px solid #000;border-right: 1px solid #000;">-</td>
+                <td style="text-align:center;border-right: 1px solid #000;">- </td>
+                </div>     
+            </tr>
+              
+            </tbody>
+          </table>
+          <div style="display: flex; justify-content: space-between;margin-top: 10px;">
+          <span>Winner</span>
+          <span><b>__________________</b></span>
+          </div>
+        </div>
+      </div>
+      </div>
+        
+      </div>
+</div>
+<!--end print -->
+<!-- booking -->
+  <div class="container-fluid">
+    <div class="row main-div"  *ngIf="divs">
+        <div class="col-md-8">
+            <div class="boxx text-light">
+                <h3 class="mb-3">Players Details</h3>
+                <table class="table text-light">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Number</th>
+                            <th scope="col">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="search_item">
+
+                        <tr *ngFor="let player of player_response;index as i;" [ngClass]="{'disable': itemDeleted}">
+                            <th scope="row">{{i+1}}</th>
+
+                            <td ><span class="span">{{player['player']}}</span></td>
+                            <td ><span class="span">{{player['number']}}</span></td>
+                            <td>{{player['ticket_price']}}</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-4"> 
+           <form (ngSubmit)="onSubmitt(confirm,success)" [formGroup]="booking_data">
+            <div class="box2 text-light">
+                <div class="das">
+                    <h3>Booking Details</h3>
+                    <p class="material-icons text-danger closess" (click)="boxes()"> close</p>
+                </div>
+                <table class="table tabless text-light">
+                    <thead>
+                       
+                    </thead>
+                    <tbody class="tbodyy">
+                        <tr [ngClass]="{'errorr': booking_data.get('name').invalid && submitted}">
+                            <th scope="row">Name: </th>
+                            <td><input type="text" placeholder="Enter Name" class="input_n" name="name" formControlName="name" required autocomplete="off"></td>
+
+                        </tr>
+                        <tr [ngClass]="{'errorr': booking_data.get('number').invalid && submitted}">
+                            <th scope="row">Number: </th>
+                            <td><input type="tel" placeholder="Enter Phone Number" class="input_n" name="number" formControlName="number" required autocomplete="off"></td>
+                        </tr>
+                        <tr [ngClass]="{'errorr': booking_data.get('email').invalid && submitted}">
+                            <th scope="row">Email: </th>
+                            <td><input type="email" placeholder="Enter Email" class="input_n" name="email" formControlName="email" required autocomplete="off"></td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row">Slot: </th>
+                            <td>{{ slot_name ?? '-'}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Exclusive: </th>
+                            <td><input class="form-check-input" type="checkbox" name="exclusive" formControlName="exclusive" (change)="onCheckboxChange()">
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row">No Of Players: </th>
+                            <td> {{addedPlayers}}</td>
+                        </tr>
+                       
+                        <tr>
+                            <th scope="row">Booking Date: </th>
+                            <td>{{selected_date}} </td>
+                        </tr>
+
+                        <tr [ngClass]="{'errorr': booking_data.get('discount').invalid && submitted}">
+                          <th scope="row">Discount: </th>
+                          <td>
+                            <input type="text" class="form-group" class="input_n dis_input" placeholder="Enter Discount %" name="" (keyup)="calculateDiscount()" formControlName="discount" >
+                          </td>
+                      </tr>
+                        <tr>
+                            <th scope="row">Discount Price: </th>
+                            <td>{{discountedPrice}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Total: </th>
+                            <td>{{discountedTotalPrice}}</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+                <div class="btnn">
+                 
+                    <button class="pdf theme_btnn float-end" >Confirm Booking</button>
+                </div>
+            </form>
+            </div>
+    </div>  
+  </div>
+  <!-- end booking -->
+  <ng-template #confirm let-modal>
+    <div class="confirmModal">
+        <img src="../../../assets/img/speech-bubble.gif" alt="">
+        <h4 class="modal-title">Are you sure?</h4>
+        <p>Are you sure you want to confirm this Booking?</p>
+        
+        <div class="modal-btn d-flex align-items-center justify-content-center">
+            <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
+            <button type="button" class="btn btn-danger" (click)="modal.close('yes')">Yes</button>
+        </div>
+    </div>
+  </ng-template>
+  <ng-template #success let-modal>
+    <div class="confirmModal">
+      <img src="../../../assets/img/verified.gif" alt="" />
+      <h4 class="modal-title">Booking Has Been Confirmed</h4>
+      <div class="modal-btn d-flex align-items-center justify-content-center">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="modal.dismiss('cancel click')"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #addPlayer>
+    <div class="modal-body">
+        <div  class="modal-content modal-content2">
+           <div  class="text-center theme_heading">
+              <span  class="close-btn close22"><i (click)="modalService.dismissAll()" class="material-icons">close</i></span>
+              <h2 class="text-modal">Add Player</h2>
+           </div>
+           <div class="inputss">
+        <form [formGroup]="addPlayerForm" (ngSubmit)="addPlayerRequest()">
+          <input type="tel" placeholder="Player Number" name="usernumber"  formControlName="usernumber" [ngClass]="{'input-error': addPlayerForm.get('usernumber').invalid && user_submit}" class="input_modal" required autocomplete="off">
+            <input type="text" placeholder="Player Name" name="username"  formControlName="username" [ngClass]="{'input-error': addPlayerForm.get('username').invalid && user_submit}" class="input_modal" required autocomplete="off">
+            <button class="btn btn-danger" type="submit">Add</button>
+            <button class="btn btn-secondary" type="button" (click)="modalService.dismissAll()">Close</button>
+        </form>
+           </div>
+        </div>
+     </div>
+  </ng-template>

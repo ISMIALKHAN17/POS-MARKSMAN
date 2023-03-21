@@ -1,0 +1,118 @@
+input ,select{
+    width: 100%;
+    height: 50px;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    background-color: transparent;
+    padding: 20px;
+    color: #fff;
+}
+select{
+    padding: 5px;
+}
+select option{
+    background-color: #000;
+}
+table *{
+    color: #fff;
+}
+
+form button{
+    width: 100%;
+}
+
+
+
+.badminton_time{
+    margin: 0;
+    gap: 12px;
+}
+
+.badminton_time li{
+    background-color: rgba(0, 128, 0, 0.426);
+    color: #fff;
+    padding: 3px 5px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.pagination-row span{
+    color: red;
+}
+
+.allBookingPopup{
+    background-color: #000;
+    border: 5px solid #fff;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.allBookingPopup button {
+    position: absolute;
+    right: 10px;
+    background: transparent;
+    color: #fff;
+    border: none;
+    font-size: 44px;
+    top: 14px;
+}
+
+table{
+    width: 100%;
+}
+tr {
+    border-bottom: 1px solid #fff;
+    padding-bottom: 10px;
+}
+
+.col-md-4 > ul > li {
+    display: flex;
+    gap: 10px;
+    padding: 5px 0px;
+    color: red;
+    font-weight: 400;
+    border-bottom: 1px solid #fff;
+    margin-bottom: 5px;
+}
+.col-md-12 > ul > li {
+    display: flex;
+    gap: 10px;
+    padding: 5px 0px;
+    color: red;
+    font-weight: 400;
+    border-bottom: 1px solid #fff;
+    margin-bottom: 10px;
+}
+.col-md-12 > ul > li > ul{
+    margin-bottom: 10px;
+}
+
+.col-md-4 ul > li > span {
+    text-align: left;
+    font-family: 'poppins';
+    font-size: 14px;
+}
+
+
+ul.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 0px;
+}
+
+ul.pagination li {
+    padding: 10px;
+    background: #bd202647;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+ul.pagination li.active{
+    background-color: red;
+}

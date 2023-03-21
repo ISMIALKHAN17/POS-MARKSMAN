@@ -1,0 +1,160 @@
+<div class="container-fluid px-5">
+  <div class="text-center theme_heading py-5">
+    <h2>All Bookings</h2>
+  </div>
+  <div class="row align-items-center">
+    <div class="col-md-7">
+      <input
+        type="text"
+        [(ngModel)]="searchText"
+
+        placeholder="Search..."
+      />
+    </div>
+    <div class="col-md-5">
+      <select
+        class="form-select"
+        aria-label="Default select example"
+        (change)="onChangeActivity($event)"
+        [ngModel]="activity"
+      >
+        <option selected disabled value="all">Select Activity</option>
+        <option value="Paintball">Paintball</option>
+        <option value="Cricket">Indoor Cricket</option>
+        <option value="Badminton">Badminton</option>
+        <option value="Airsoft">Airsoft Range</option>
+        <option value="Archery">Archery</option>
+        <option value="Gelblaster">Gelblaster</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="py-5">
+    <div *ngIf="isLoading" class="loader-main">
+      <span class="loaderrr"></span>
+    </div>
+    <table *ngIf="!isLoading && isData" class="table py-3">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Game</th>
+          <th scope="col">Number</th>
+          <th scope="col">Date</th>
+          <th scope="col">Time</th>
+          <th scope="col">Status</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let item of responseData.data.data"
+          [hidden]="
+            !item.name.toLowerCase().includes(searchText.toLowerCase()) &&
+            !item.game_name.toLowerCase().includes(searchText.toLowerCase()) &&
+            !item.id.toString().includes(searchText)"
+        >
+          <th scope="row">#{{ item.id }}</th>
+          <td>{{ item.name }}</td>
+          <td>{{ item.game_name }}</td>
+          <td>{{ item.phone_no }}</td>
+          <td>{{ item.select_date }}</td>
+          <td *ngIf="item.game_name == 'Cricket'">
+            {{ item.user_start_time }} to {{ item.user_end_time }}
+          </td>
+          <td *ngIf="item.game_name == 'Paintball'">{{ item.slot[0].name }}</td>
+          <td *ngIf="item.game_name == 'Badminton'">
+            <ul class="badminton_time d-flex">
+              <li *ngFor="let time of item.slot_booked; index as i">
+
+                {{ time.book_slot[0].name }}
+              </li>
+            </ul>
+
+          </td>
+          <td>{{ item.book_status }}</td>
+          <td><button class="theme_btnn" (click)="openBookingDetails(allBookingPopup,item.id)">View Details</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="!isData && !isLoading" class="text-center error">
+     No Booking Found
+    </p>
+    <div *ngIf="!isLoading" class="row align-items-center pagination-row">
+      <div class="col-md-2"><span>{{ bookingsFound }}</span> Bookings Found.</div>
+      <div class="col-md-8">
+        <ul class="pagination">
+          <li
+            [ngClass]="{ active: item == currentPage }"
+            (click)="paginantionData(item)"
+            *ngFor="let item of paginantion"
+          >
+            {{ item }}
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-2">
+        Showing: <span>{{ bookingsFrom }}</span> To <span>{{ bookingsTo }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<ng-template #allBookingPopup let-c="close" let-d="dismiss">
+  <div class="allBookingPopup">
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <div class="row">
+      <div class="col-md-8 " *ngIf="detailsData[0].game_name != 'Badminton'">
+
+          <h3>Players Details</h3>
+        <table class="table py-3">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Number</th>
+          </tr>
+          <tr *ngFor="let item of detailsData[0].player ; index as i">
+            <td>{{i+1}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.number}}</td>
+          </tr>
+        </table>
+
+      </div>
+      <div [ngClass]="{'col-md-12': detailsData[0].game_name == 'Badminton' ,'col-md-4': detailsData[0].game_name != 'Badminton'}" >
+        <h3>Booking Details</h3>
+          <ul>
+            <li>Name : <span>{{detailsData[0].name}}</span></li>
+            <li>Email : <span>{{detailsData[0].email}}</span></li>
+            <li>Booking ID : <span>#{{detailsData[0].id}}</span></li>
+            <li>Phone Number : <span>{{detailsData[0].phone_no}}</span></li>
+            <li>Date : <span>{{detailsData[0].select_date}}</span></li>
+            <li *ngIf="detailsData[0].game_name == 'Paintball'">Time Slot : <span>{{detailsData[0].slot[0].name}}</span></li>
+            <li *ngIf="detailsData[0].game_name == 'Cricket'">Time Slot :  <span>{{ detailsData[0].user_start_time }} to {{ detailsData[0].user_end_time }}</span></li>
+            <li *ngIf="detailsData[0].game_name == 'Badminton'">
+              Time Slot :
+              <ul class="badminton_time d-inline-flex">
+                <li *ngFor="let time of detailsData[0].slot_booked; index as i">
+                  {{ time.book_slot[0].name}}
+                </li>
+              </ul>
+            </li>
+            <li>Booking Status : <span>{{detailsData[0].book_status}}</span></li>
+            <li *ngIf="detailsData[0].game_name == 'Paintball'" >Number of players : <span>{{detailsData[0].no_of_players}}</span></li>
+            <li *ngIf="detailsData[0].game_name != 'Paintball'">Number of players : <span>{{detailsData[0].number_of_player}}</span></li>
+            <li>Booked From : <span>{{detailsData[0].type == 'Employee' ? 'Arena' :'Website' }}</span></li>
+            <li *ngIf="detailsData[0].game_name == 'Paintball'" >Exclusivity : <span>{{detailsData[0].exclusivity}}</span></li>
+            <li>Discount : <span>{{decimalPipe.transform(detailsData[0].discount,'1.0-0')??0 }}</span></li>
+            <li *ngIf="detailsData[0].game_name == 'Paintball'">Total Price : <span>{{ decimalPipe.transform(detailsData[0].total_price,'1.0-0')}}</span></li>
+            <li *ngIf="  detailsData[0].game_name != 'Paintball'">Total Price : <span>{{decimalPipe.transform(detailsData[0].price,'1.0-0')}}</span></li>
+
+          </ul>
+      </div>
+    </div>
+  </div>
+</ng-template>
+

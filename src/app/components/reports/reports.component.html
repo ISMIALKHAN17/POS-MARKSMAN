@@ -1,0 +1,86 @@
+<div class="container-fluid  position-relative pt-4 px-4">
+    <div class="container-fluid ">
+        <div class="theme_heading text-center">
+            <h2>Reports</h2>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="filter-row">
+                    <div class="filter" >
+                        <label for="">Filter by ID </label>
+                       <select class="form-select" (change)="userRevenue($event)" name="" id="">
+                        <option value="All">All</option>
+                        <option *ngFor="let item of alluser" [value]="item.id">{{item.name}}</option>
+                       </select>
+                    </div>
+                    <div class="filter">
+                        <label for="">Filter by Date </label>
+                        <input type="date"    [(ngModel)]="selectedDate" class="form-control" (ngModelChange)="onDateChange()">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="isLoading" class="loading-main">
+            <span class="loaderrr"></span>
+        </div>
+        <div style="text-align: center;">
+            <h4>Sales Report of {{selectedDate}}</h4>
+        </div>
+        <table class="table">
+            <tr>
+                <th>#</th>
+                <th>Game</th>
+                <th> Bookings</th>
+                <th> Revenue</th>
+            </tr>
+            <tr>
+                <td>#1</td>
+                <td>Paintball</td>
+                <td>{{data.paintballTotalBooking ?? 0}}</td>
+                <td>{{decimalPipe.transform(data.paintballTotalPrice,'1.0-0') ?? 0}}</td>
+            </tr>
+            <tr>
+                <td>#2</td>
+                <td>Indoor Cricket</td>
+                <td>{{data.cricketTotalBooking ?? 0}}</td>
+                <td>{{decimalPipe.transform(data.cricketTotalPrice,'1.0-0') ?? 0}}</td>
+            </tr>
+            <tr>
+                <td>#4</td>
+                <td>Archery</td>
+                <td>{{data.archeryTotalBooking ?? 0}}</td>
+                <td>{{decimalPipe.transform(data.archeryTotalPrice,'1.0-0') ?? 0}}</td>
+            </tr>
+            <tr>
+                <td>#5</td>
+                <td>Airsoft</td>
+                <td>{{data.airsoftTotalBooking ?? 0}}</td>
+                <td>{{decimalPipe.transform(data.airsoftTotalPrice,'1.0-0') ?? 0}}</td>
+            </tr>
+            <tr>
+                <td>#6</td>
+                <td>Gel Blaster</td>
+                <td>{{data.gelblasterTotalBooking ?? 0}}</td>
+                <td>{{decimalPipe.transform(data.gelblasterTotalPrice,'1.0-0') ?? 0}}</td>
+            </tr>
+        </table>
+        <div class="total">
+            <h3>Total Revenue: {{decimalPipe.transform(data.totalPrice,'1.0-0')}}</h3>
+            <button  class="theme_btnn" (click)="print()">Print Report</button>
+            <button *ngIf="userId != 'All'"  class="theme_btnn" (click)="collectRevnue(collect)">Collect</button>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #collect let-c="close" let-d="dismiss">
+    <div class="confirmModal">
+        <h4>Collect Revenue</h4>
+        <p><span>Total:  <b>{{decimalPipe.transform(data.collectionDetail.totalRevenue,'1.0-0')??0}}</b></span><span>Collected Amount: <b>{{decimalPipe.transform(data.collectionDetail.collectedAmount,'1.0-0')??0}}</b></span><span>Balance: <b>{{decimalPipe.transform(data.collectionDetail.balance,'1.0-0')??0}}</b></span></p>
+        <input type="text" [ngClass]="{'error_border': errorBorder}" [(ngModel)]="collectionAmount" (keyup)="updateCollection()" placeholder="Enter Collection Amount">
+        <div class="modal-btn d-flex align-items-center justify-content-center">
+            <button class="btn btn-outline-secondary" (click)="modalService.dismissAll('cancel click')">Cancel</button>
+            <button class="btn btn-outline-secondary" (click)="collectAmount()">Collect</button>
+        </div>
+    </div>
+</ng-template>

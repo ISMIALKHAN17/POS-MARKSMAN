@@ -1,0 +1,123 @@
+
+
+  
+.modal-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  
+  /* .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+        max-width: 400px;
+      margin: 0 auto;
+  } */
+  
+  
+  
+  .confirmModal {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .confirmModal * {
+    color: #000;
+  }
+  
+  .confirmModal h4 {
+    font-size: 50px;
+    font-weight: 600;
+  }
+  
+  .modal-btn {
+    gap: 22px;
+  }
+  
+  .modal-btn button:last-child {
+    background: green;
+    color: #fff !important;
+    border: none;
+    width: 120px;
+  }
+  
+  .modal-btn button:first-child {
+    background: #850000;
+    color: #fff !important;
+    border: none;
+    width: 120px;
+  }
+  
+  .confirmModal img {
+    width: 170px;
+  }
+  
+  a.material-icons.dl.d-anchor {
+    pointer-events: none;
+  }
+
+
+  form > div input  {
+    width: 100%;
+    margin-bottom: 10px;
+    height: 30px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #fff;
+    color: #fff;
+
+  }
+  form div input:focus-visible {
+    outline: none;
+  }
+
+  .borderd-box{
+      background-color: transparent;
+      border: 5px solid #fff;
+      border-radius: 20px;
+      padding: 20px;
+    margin: 20px;
+  }
+
+  .is-invalid {
+    border-color: red !important;
+  }
+
+  .form-group {
+    display: flex;
+    align-items: end;
+    gap: 10px;
+    border-bottom: 1px solid;
+    flex-wrap: nowrap;
+    padding-bottom: 8px;
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    white-space: nowrap;
+}
+
+.form-group input {
+    margin: 0 !important;
+    border: none !important;
+}
+
+.price-list ul li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #fff;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+.col-md-8 > ul{
+  list-style: circle;
+  padding-left: 10px;
+} 
+
+.col-md-8 h2{
+  font-size: 30px;
+}

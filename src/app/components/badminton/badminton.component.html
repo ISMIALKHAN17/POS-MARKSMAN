@@ -1,0 +1,612 @@
+<div class="container-fluid">
+  <!-- search-bar -->
+  <div class="bg-colors searchs h-100 p-4 my-3">
+    <form>
+      <input
+        type="text"
+        autocomplete="off"
+        placeholder="Enter Booking ID , Phone Number or Email"
+        [(ngModel)]="searches"
+        name="searches"
+        (keyup.enter)="search()"
+      />
+      <a (click)="search()">
+        <p class="material-icons anchor">search</p>
+      </a>
+    </form>
+  </div>
+</div>
+<section *ngIf="step == 0">
+  <!-- end search-bar -->
+  <div class="theme_heading text-center">
+    <h2>Badminton</h2>
+  </div>
+  <div class="container-fluid">
+    <!-- date-picker -->
+    <section *ngIf="new_div">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="datee">
+              <h3 class="h4">Please Select Date</h3>
+              <p>
+                {{ minDate.day }} - {{ ms[minDate.month] }} - {{ minDate.year }}
+              </p>
+            </div>
+          </div>
+
+          <!-- <input
+            type="number"
+            name="inputValues"
+            id=""
+            class="member"
+            placeholder="Number of Players"
+            required
+            [(ngModel)]="inputNumber"
+          /> -->
+          <label class="mb-2"> Players</label>
+
+          <select
+            [(ngModel)]="inputNumber"
+            class="form-select"
+            aria-label="Default select example"
+          >
+            <option value="singles">Singles</option>
+            <option value="doubles">Doubles</option>
+          </select>
+          <p class="errorrs" *ngIf="member_error">
+            Please Select Specific Member !
+          </p>
+          <p class="errorrs" *ngIf="member_error2">
+            Number Of Players is required
+          </p>
+
+          <ngb-datepicker
+            [minDate]="{ year: 2023, month: 2, day: 25 }"
+            class="booking ng-valid ng-touched ng-dirty"
+            [(ngModel)]="selectedDate"
+            (dateSelect)="onDateSelect($event)"
+          ></ngb-datepicker>
+        </div>
+      </div>
+    </section>
+    <!-- end date-picker -->
+  </div>
+</section>
+
+<section *ngIf="step == 1" class="secc">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h3 class="d-flex justify-content-between align-content-center">
+          Select Your Time
+          <span class=""> You can select multiple slots </span
+          ><span class="date">{{ selected_date }}</span>
+        </h3>
+        <div class="row">
+          <div class="col-md-12">
+            <div>
+              <div class="loading-main" *ngIf="mainLoading">
+                <span class="load-ani"></span>
+              </div>
+              <div *ngIf="!mainLoading" class="row">
+                <div
+                  class="col-md-3 mb-3"
+                  *ngFor="let gelSlots of gelBlasterSlots"
+                >
+                  <div class="gel-slots">
+                    <div class="badminton-slots">
+                      <input
+                        [disabled]="gelSlots.status == 1"
+                        type="checkbox"
+                        name="time"
+                        [(ngModel)]="gelSlots.checked"
+                        (change)="onCheckboxChange(gelSlots)"
+                      />
+                      <span>{{ gelSlots.name }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div *ngIf="!ifTimeSelected" class="form-error">
+              <p>Please Select Your Slot</p>
+            </div>
+            <div class="buttons_row d-flex justify-content-between">
+              <button class="theme_btnn" (click)="step = 0">
+                <i class="fa-regular fa-arrow-left-long"></i> Back
+              </button>
+              <button class="theme_btnn" (click)="submitData()">
+                Next <i class="fa-regular fa-arrow-right-long"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section *ngIf="step == 2" class="my-3">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 booking_final">
+        <h3 class="text-center d-flex justify-content-between">
+        Badminton
+          <span>Total Players 4</span>
+        </h3>
+        <div class="row borderr">
+          <div class="col-md-8 player_data">
+            <h3>Rules and Regulations</h3>
+            <ul>
+              <li>All players MUST report 5 minutes before the slot time.</li>
+              <li>
+                All players MUST submit the equipment back before leaving the
+                court.
+              </li>
+              <li>
+                All Players MUST use the equipment carefully, any misuse or
+                damage to the equipment will be player's responsibility.
+                <br /><b
+                  _ngcontent-sti-c69=""
+                  style="color: red"
+                  class="ng-tns-c69-0"
+                  >PLEASE NOTE THAT YOU WILL BE CHARGED FOR ANY DAMAGES TO THE
+                  EQUIPMENT</b
+                >
+              </li>
+              <li>
+                Decision of the referee / Umpire will be final. No arguments
+                will be entertained.
+              </li>
+              <li>
+                The Facilitation staff is there for your assistance, please
+                cooperate with them.
+              </li>
+              <li>
+                Failure to compliance will result in disqualification from the
+                game or upto the extent of removal of the player from the
+                premises.
+              </li>
+            </ul>
+            <h3>Charges</h3>
+            <ul>
+              <li>
+                <b
+                  >Rs 599 / Singles / 30 minutes</b
+                >
+              </li>
+              <li>
+                <b
+                  >Rs 799 / Doubles / 30 minutes</b
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <h3>Booking Details</h3>
+            <form
+              [formGroup]="bookingForm"
+              (ngSubmit)="saveData(confirm, success)"
+            >
+              <ul class="booking_details">
+                <li
+                  class="input_li"
+                  [ngClass]="{
+                    wrong_input:
+                      isCheck && bookingForm.get('name').errors?.required
+                  }"
+                >
+                  Name :
+                  <span
+                    ><input
+                      formControlName="name"
+                      type="text"
+                      placeholder="Enter Name"
+                  /></span>
+                </li>
+
+                <li
+                  class="input_li"
+                  [ngClass]="{
+                    wrong_input:
+                      (isCheck && bookingForm.get('number').errors?.required) ||
+                      (isCheck && bookingForm.get('number').errors?.pattern)
+                  }"
+                >
+                  Number :
+                  <span
+                    ><input
+                      formControlName="number"
+                      type="tel"
+                      placeholder="Enter Phone Number"
+                  /></span>
+                </li>
+
+                <li
+                  class="input_li"
+                  [ngClass]="{
+                    wrong_input:
+                      (isCheck && bookingForm.get('email').errors?.required) ||
+                      (isCheck && bookingForm.get('email').errors?.email)
+                  }"
+                >
+                  Email :
+                  <span
+                    ><input
+                      formControlName="email"
+                      type="email"
+                      placeholder="Enter Email Adress"
+                  /></span>
+                </li>
+
+                <li>
+                  Number Of Players :
+                  <span>{{ finalData.no_of_players }}</span>
+                </li>
+                <li>
+                  Date : <span>{{ finalData.date }}</span>
+                </li>
+                <li>
+                  You Have Booked :
+                  <span>{{ finalData.booked_for }} slots</span>
+                </li>
+                <li>
+                  Time :
+                  <span class="selected_badminton_slot"
+                    ><span *ngFor="let item of finalData.slots; index as i">{{
+                      item.name
+                    }}</span></span
+                  >
+                </li>
+                <li class="input_li">
+                  Discount :
+                  <span>
+                    <input
+                      type="text"
+                      placeholder="Enter Discount %"
+                      formControlName="discount"
+                      (keyup)="calculateDiscount()"
+                    />
+                  </span>
+                </li>
+                <li>
+                  Subtotal : <span>{{ subTotal }}</span>
+                </li>
+                <li>
+                  Discounted Price : <span>{{ discountedPrice }}</span>
+                </li>
+                <li>
+                  Total : <span>{{ discountedTotalPrice }}</span>
+                </li>
+              </ul>
+              <div class="btnn">
+                <div class="row">
+                  <!-- <div class="col-md-6">
+                    <select
+                      class="form-select mb-3"
+                      aria-label="Default select example"
+                      formControlName="payment_status"
+                    >
+                      <option
+                        *ngFor="let option of paymentStatus"
+                        [disabled]="option.value == ''"
+                        [value]="option.value"
+                      >
+                        {{ option.label }}
+                      </option>
+                    </select>
+                  </div> -->
+                  <!-- <div class="col-md-6">
+                    <select
+                      class="form-select mb-3"
+                      aria-label="Default select example"
+                      formControlName="bookingsStatus"
+                      name="status"
+                    >
+                      <option
+                        *ngFor="let option of bookingStatus"
+                        [disabled]="option.value == ''"
+                        [value]="option.value"
+                      >
+                        {{ option.label }}
+                      </option>
+                    </select>
+                  </div> -->
+                </div>
+
+                <button class="pdf theme_btnn float-end" type="submit">
+                  Confirm Booking
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-12">
+            <div class="btnx">
+              <button class="theme_btnn" (click)="step = 1">BACK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- search-data -->
+<div class="row main-div" *ngIf="div">
+  <div class="loading-main" *ngIf="searchIsLoading">
+    <span class="load-ani"></span>
+  </div>
+  <div class="loading-main" *ngIf="searchError && !searchIsLoading">
+    <div class="alert alert-danger" role="alert">Invalid Booking ID</div>
+  </div>
+  <div *ngIf="!searchIsLoading && !searchError" class="col-md-8 player_data">
+    <h3>Rules and Regulations</h3>
+            <ul>
+              <li>All players MUST report 5 minutes before the slot time.</li>
+              <li>
+                All players MUST submit the equipment back before leaving the
+                court.
+              </li>
+              <li>
+                All Players MUST use the equipment carefully, any misuse or
+                damage to the equipment will be player's responsibility.
+                <br /><b
+                 
+                  style="color: red"
+                  class="ng-tns-c69-0"
+                  >PLEASE NOTE THAT YOU WILL BE CHARGED FOR ANY DAMAGES TO THE
+                  EQUIPMENT</b
+                >
+              </li>
+              <li>
+                Decision of the referee / Umpire will be final. No arguments
+                will be entertained.
+              </li>
+              <li>
+                The Facilitation staff is there for your assistance, please
+                cooperate with them.
+              </li>
+              <li>
+                Failure to compliance will result in disqualification from the
+                game or upto the extent of removal of the player from the
+                premises.
+              </li>
+            </ul>
+            <h3>Charges</h3>
+            <ul>
+              <li>
+                <b
+                  >Rs 599 / Singles / 30 minutes</b
+                >
+              </li>
+              <li>
+                <b
+                  >Rs 799 / Doubles / 30 minutes</b
+                >
+              </li>
+            </ul>
+  </div>
+  <div *ngIf="!searchIsLoading && !searchError" class="col-md-4">
+    <form
+      [formGroup]="searchBookingForm"
+      (ngSubmit)="searchBooking(confirm, success)"
+    >
+      <div class="text-light">
+        <div class="das">
+          <h3>Booking Details</h3>
+          <p class="material-icons text-danger closess" (click)="boxes1()">
+            close
+          </p>
+        </div>
+        <table class="table tabless text-light">
+          <thead>
+            <tr>
+              <th scope="row">Booking ID:</th>
+              <td>#{{ responseData.id }}</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Name:</th>
+              <td>{{ responseData.name }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Number:</th>
+              <td>{{ responseData.phone_no }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Email:</th>
+              <td>{{ responseData.email }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Booking Date:</th>
+              <td>{{ responseData.select_date }}</td>
+            </tr>
+            <tr>
+              <th scope="row">You Have Booked :</th>
+              <td>
+                <span>{{ responseData.booked_for }} slots</span>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Time :</th>
+              <td>
+                <ul
+                  class="m-0 d-flex align-items-center"
+                  style="flex-wrap: wrap; gap: 3px"
+                >
+                  <li *ngFor="let item of this.responseData.slot_booked">
+                    <span class="bad_slots">
+                      {{ item.book_slot[0].name }}
+                    </span>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">No Of Players:</th>
+              <td>{{ responseData.number_of_player }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Status:</th>
+              <td>
+                <span
+                  [ngClass]="{
+                    booked: responseData.book_status == 'Booked',
+                    expired: responseData.book_status == 'Expired',
+                    hold: responseData.book_status == 'Hold',
+                    cancel: responseData.book_status == 'Cancel'
+                  }"
+                  >{{ responseData.book_status }}</span
+                >
+              </td>
+            </tr>
+
+            <tr
+              *ngIf="
+                responseData.book_status == 'Hold' ||
+                responseData.book_status == 'Canceled'
+              "
+            >
+              <th scope="row">Expire On:</th>
+              <td>{{ responseData.exp_date }}</td>
+            </tr>
+            <tr
+              *ngIf="
+                responseData.book_status == 'Hold' ||
+                responseData.book_status == 'Canceled'
+              "
+            >
+              <th scope="row">Time Left:</th>
+              <td>
+                {{
+                  responseData.book_status == "Expired"
+                    ? "00:00"
+                    : responseData.time_left
+                }}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Booked Date:</th>
+              <td>{{ responseData.created_at }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Sub Total:</th>
+              <td>{{ subTotal }}</td>
+            </tr>
+            <tr *ngIf="responseData.book_status == 'Hold'">
+              <th scope="row">Discount:</th>
+              <td>
+                <span
+                  ><input
+                    type="text"
+                    placeholder="Enter Discount % "
+                    (keyup)="searchCalculateDiscount()"
+                    formControlName="discount"
+                    class="form-control"
+                /></span>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Discounted Price:</th>
+              <td>{{ discountedPrice }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Total:</th>
+              <td>{{ discountedTotalPrice }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="btnn" *ngIf="responseData.book_status == 'Hold'">
+        <div class="row">
+          <!-- <div class="col-md-6">
+            <select
+              class="form-select mb-3"
+              aria-label="Default select example"
+              formControlName="payment_status"
+            >
+              <option
+                *ngFor="let option of paymentStatus"
+                [disabled]="option.value == ''"
+                [value]="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </select>
+          </div> -->
+          <!-- <div class="col-md-6">
+            <select
+              class="form-select mb-3"
+              aria-label="Default select example"
+              formControlName="book_status"
+              name="status"
+            >
+              <option
+                *ngFor="let option of bookingStatus"
+                [disabled]="option.value == ''"
+                [value]="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </select>
+          </div> -->
+          <div class="col-md-12">
+            <div
+              class="form-error"
+              *ngIf="
+                (checkc && searchBookingForm.get('status').invalid) ||
+                (checkc && searchBookingForm.get('payment_status').invalid)
+              "
+            >
+              Please select Payment and Booking
+            </div>
+          </div>
+        </div>
+
+        <button class="pdf theme_btnn float-end" type="submit">
+          Confirm Booking
+        </button>
+      </div>
+    </form>
+    <button class="theme_btnn" (click)="print()">Print Ticket</button>
+  </div>
+</div>
+<!-- end search-data -->
+
+<ng-template #confirm let-modal>
+  <div class="confirmModal">
+    <img src="../../../assets/img/speech-bubble.gif" alt="" />
+    <h4 class="modal-title">Are you sure?</h4>
+    <p>Are you sure you want to confirm this Booking?</p>
+
+    <div class="modal-btn d-flex align-items-center justify-content-center">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="modal.dismiss('cancel click')"
+      >
+        Cancel
+      </button>
+      <button type="button" class="btn btn-danger" (click)="modal.close('yes')">
+        Yes
+      </button>
+    </div>
+  </div>
+</ng-template>
+<ng-template #success let-modal>
+  <div class="confirmModal">
+    <img src="../../../assets/img/verified.gif" alt="" />
+    <h4 class="modal-title">Booking Has Been Confirmed</h4>
+    <div class="modal-btn d-flex align-items-center justify-content-center">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="step = 0; modal.dismiss('cancel click')"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</ng-template>

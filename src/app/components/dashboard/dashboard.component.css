@@ -1,0 +1,43 @@
+.report_box {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: rgb(255 255 255 / 24%) 0px 3px 8px;
+    margin-bottom: 25px;
+}
+
+.report_box h4 {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 40px;
+}
+.report_box h5 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.report_box h4 span:last-child {
+    font-weight: 700;
+}
+
+.loading-main {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    background-color: #000000ad;
+}
+.report_box h2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 28px;
+    margin: 0;
+}
+
+.report_box h2 span span {
+    color: #bd2026;
+}

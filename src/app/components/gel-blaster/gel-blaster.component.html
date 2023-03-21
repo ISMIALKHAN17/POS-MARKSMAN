@@ -1,0 +1,139 @@
+<div class="container-fluid">
+  <!-- search-bar -->
+  <div class="bg-colors searchs h-100 p-4 my-3">
+    <form>
+      <input
+        type="text"
+        autocomplete="off"
+        placeholder="Enter Booking ID , Phone Number or Email"
+        [(ngModel)]="searches"
+        name="searches"
+        (keyup.enter)="search()"
+      />
+      <a (click)="search()">
+        <p class="material-icons anchor">search</p>
+      </a>
+    </form>
+  </div>
+</div>
+
+<div class="borderd-box">
+  <div class="theme_heading text-center">
+    <h2>Gel Blaster</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-8">
+      <h2>Rules and Regulations</h2>
+      <ul> 
+        <li>Safety equipments MUST not be taken off during the game.</li>
+        <li>
+          All players MUST submit the equipment back before leaving the battle
+          field.
+        </li>
+        <li>
+          All Players MUST use the equipment carefully, any misuse or damage to
+          the equipment will be player's responsibility.
+          <br /><b style="color: red"
+            >PLEASE NOTE THAT YOU WILL BE CHARGED FOR ANY DAMAGES TO THE
+            EQUIPMENT</b
+          >
+        </li>
+        <li>
+          The Facilitation staff is there for your assistance, please cooperate
+          with them.
+        </li>
+        <li>
+          Failure to compliance will result in disqualification from the game or
+          upto the extent of removal of the player from the premises.
+        </li>
+        <li>Maximum 10 players per round. Teams will be divided equally.</li>
+      </ul>
+      <h2>Charges</h2>
+      <ul>
+        <li style="font-size: 20px">
+          <b>Rs 199</b> Per Head (<b>Approx. 1000</b>
+          Shots) (Round time: 2 Minutes 30 Seconds)
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-4">
+      <form [formGroup]="form" (ngSubmit)="submitForm(confirm , success)">
+        <div class="form-group" [ngClass]="{'is-invalid': form.get('name').invalid && form.get('name').touched}">
+          <label for="name">Name:</label>
+          <input type="text" id="name" formControlName="name" placeholder="Enter Name">
+          
+        </div>
+      
+        <div class="form-group" [ngClass]="{'is-invalid': form.get('phone_no').invalid && form.get('phone_no').touched}">
+          <label for="phone">Phone:</label>
+          <input type="text" id="phone" formControlName="phone_no"   placeholder="Enter Phone Number">
+        
+        </div>
+      
+        <div class="form-group" [ngClass]="{'is-invalid': form.get('number_of_player').invalid && form.get('number_of_player').touched}">
+          <label for="numPlayers">Number of Players:</label>
+          <input type="number" id="numPlayers" (keyup)="discountValidator()" formControlName="number_of_player" placeholder="Enter Number of Players">
+      
+        </div>
+        <div class="form-group">
+          <label for="discount">Discount:</label>
+          <input id="discount" type="number" (keyup)="discountValidator()" formControlName="discount" placeholder="Enter Discount">
+        </div>
+  
+      
+        <div  class="price-list">
+          <ul>
+            <li>Subtotal: <span>{{ subTotal }}</span></li>
+            <li>Discount: <span>{{ discount }}%</span></li>
+            <li>Total: <span>{{ totalAmount }}</span></li>
+          </ul>
+        </div>
+        <div>
+          <button class="theme_btnn" type="submit" [disabled]="form.invalid">Confirm Booking</button>
+        </div>
+      </form>
+      
+    </div>
+  </div>
+</div>
+
+<!-- search-data -->
+
+<!-- end search-data -->
+
+<ng-template #confirm let-modal>
+  <div class="confirmModal">
+    <img src="../../../assets/img/speech-bubble.gif" alt="" />
+    <h4 class="modal-title">Are you sure?</h4>
+    <p>Are you sure you want to confirm this Booking?</p>
+
+    <div class="modal-btn d-flex align-items-center justify-content-center">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="modal.dismiss('cancel click')"
+      >
+        Cancel
+      </button>
+      <button type="button" class="btn btn-danger" (click)="modal.close('yes')">
+        Yes
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #success let-modal>
+  <div class="confirmModal">
+    <img src="../../../assets/img/verified.gif" alt="" />
+    <h4 class="modal-title">Booking Has Been Confirmed</h4>
+    <div class="modal-btn d-flex align-items-center justify-content-center">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="modal.dismiss('cancel click')"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</ng-template>

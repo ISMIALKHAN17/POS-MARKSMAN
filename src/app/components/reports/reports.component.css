@@ -1,0 +1,152 @@
+
+
+
+.report_box {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: rgb(255 255 255 / 24%) 0px 3px 8px;
+    margin-bottom: 25px;
+}
+
+.report_box h4 {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 40px;
+}
+
+.report_box h4 span:last-child {
+    font-weight: 700;
+}
+
+.filter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    margin-bottom: 25px;
+}
+
+.filter label {
+    font-weight: 500;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.filter input {
+    height: 40px;
+    border: 1px solid #fff;
+    background: transparent;
+    outline: none;
+    border-radius: 5px;
+    padding: 10px;
+    color: #fff;
+}
+
+.filter {
+    display: flex;
+    align-items: center;
+    width: 40%;
+}
+
+.filter label {white-space: nowrap;}
+
+
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+.loading-main {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: #060606f5;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    border-radius: 20px;
+}
+
+.row {
+    position: relative;
+}
+
+
+.table *{
+    color: #fff;
+}
+
+table tr {
+    border-bottom: 1px solid #fff;
+}
+table td {
+    padding: 10px 0px;
+}
+table th{
+    font-size: 20px;
+    padding: 10px 0px;
+}
+
+.total {
+    text-align: right;
+}
+
+.container-fluid.position-relative {
+    border: 5px solid #fff;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+
+.confirmModal {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .confirmModal * {
+    color: #000;
+  }
+  
+  .confirmModal h4 {
+    font-size: 50px;
+    font-weight: 600;
+  }
+  
+  .modal-btn {
+    gap: 22px;
+  }
+  
+  .modal-btn button:last-child {
+    background: green;
+    color: #fff !important;
+    border: none;
+    width: 120px;
+  }
+  
+  .modal-btn button:first-child {
+    background: #850000;
+    color: #fff !important;
+    border: none;
+    width: 120px;
+  }
+  
+  .confirmModal img {
+    width: 170px;
+  }
+.confirmModal input{
+    width: 50%;
+    margin: auto 10px;
+    outline: none;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+.confirmModal p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 90px;
+}
+button{
+    margin: 0px 10px;
+}

@@ -1,0 +1,221 @@
+h3 span:nth-child(1) {
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    color: white;
+}
+
+.secc{
+    margin-top: 80px;
+}
+.gell-slots li {
+    width: 100%;
+}
+.gell-slots li, .gell-slots .time-btn {
+    width: 100%;
+}
+.time-btn input {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+.gel-slots input + span {
+    font-size: 18px;
+    color: #000;
+}
+.time-btn>span {
+    color: #fff;
+    font-size: 20px;
+    height: 65px;
+    width: 100%;
+    background: #4aff3e;
+    padding: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+.time-btn input:checked + span {
+    background-color: gray;
+}
+.booking_final {
+    border: 5px solid #fff;
+    padding: 20px;
+    border-radius: 10px;
+}
+.booking_details li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #fff;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+.booking_details li > span {
+    font-size: 19px;
+    padding-left: 10px;
+    width: 55%;
+}
+.btnx {
+    display: flex;
+    justify-content: space-between;
+}
+
+.badminton-slots{
+    position: relative;
+}
+.badminton-slots input {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.badminton-slots span {
+    color: #000;
+    font-size: 20px;
+    height: 65px;
+    width: 100%;
+    background: #4aff3e;
+    padding: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.badminton-slots input:checked+span {
+    background: #808080;
+    color: #fff;
+}
+.badminton-slots input:disabled+span {
+    background: #850000;
+    color: #fff;
+}
+
+
+/* li inputs  */
+li.input_li {
+    justify-content: start!important;
+  }
+
+  li.input_li input {
+    margin: 0 !important;
+    border: none !important;
+    width: 100% !important;
+    background: transparent;
+    font-size: 14px;
+    font-family: 'poppins' !important;
+    color: #fff;
+  }
+
+  li.input_li input:focus-visible {
+    outline: none !important;
+  }
+
+
+li span{
+    font-family: 'poppins' !important;
+  }
+
+  li.input_li.wrong_input   {
+    border-bottom: 1px solid red !important;
+  }
+  /* li inputs  */
+
+  .selected_badminton_slot {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  .selected_badminton_slot span{
+    font-size: 10px;
+    background-color: #4aff3e;
+    padding: 2px;
+    border-radius: 4px;
+    color: #000;
+  }
+
+
+
+.modal-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  /* .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+        max-width: 400px;
+      margin: 0 auto;
+  } */
+
+
+
+  .confirmModal {
+    text-align: center;
+    padding: 20px;
+  }
+
+  .confirmModal * {
+    color: #000;
+  }
+
+  .confirmModal h4 {
+    font-size: 50px;
+    font-weight: 600;
+  }
+
+  .modal-btn {
+    gap: 22px;
+  }
+
+  .modal-btn button:last-child {
+    background: green;
+    color: #fff !important;
+    border: none;
+    width: 120px;
+  }
+
+  .modal-btn button:first-child {
+    background: #850000;
+    color: #fff !important;
+    border: none;
+    width: 120px;
+  }
+
+  .confirmModal img {
+    width: 170px;
+  }
+
+  select {
+    height: 50px;
+    border: 1px solid #850000;
+    margin-bottom: 20px;
+  }
+
+  ul select{
+    margin: 0;
+  }
+
+  .bad_slots{
+    background-color: rgba(0, 128, 0, 0.426);
+    color: #fff;
+    padding: 3px 5px;
+    border-radius: 5px;
+    font-size: 12px;
+  }
+
+
+
+
+
